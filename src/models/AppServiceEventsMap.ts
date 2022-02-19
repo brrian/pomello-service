@@ -1,6 +1,7 @@
 import { AppState } from './AppState';
+import { AppTransitionEvent } from './AppTransitionEvent';
 
 export type AppServiceEventsMap = {
-  transition: AppState;
+  transition: AppTransitionEvent;
   update: AppState;
 };

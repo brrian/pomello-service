@@ -2,8 +2,9 @@ import createAppService from './createAppService';
 import createEventEmitter from './createEventEmitter';
 import createTimerService from './createTimerService';
 import {
-  AppState,
+  AppPomodoroStateValue,
   AppStateValue,
+  AppTransitionEvent,
   PomelloEventMap,
   PomelloServiceConfig,
   PomelloState,
@@ -20,8 +21,10 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
   const appService = createAppService();
   const timerService = createTimerService();
 
-  const handleAppTransition = (state: AppState): void => {
-    if (state.value === AppStateValue.selectTask) {
+  const setIndex = 0;
+
+  const handleAppTransition = ({ state, prevState }: AppTransitionEvent): void => {
+    if (prevState.value === AppStateValue.initializing) {
       emit('appInitialize', getState());
     } else if (state.value === AppStateValue.task) {
       timerService.createTimer({
@@ -63,6 +66,26 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
     emit('update', getState());
   };
 
+  const transitionPomodoroState = (): void => {
+    const set = settings.set[setIndex];
+
+    let target: AppPomodoroStateValue | undefined = undefined;
+
+    if (set === 'task') {
+      target = AppStateValue.task;
+    } else if (set === 'shortBreak') {
+      target = AppStateValue.shortBreak;
+    } else if (set === 'longBreak') {
+      target = AppStateValue.longBreak;
+    }
+
+    if (!target) {
+      throw new Error(`Unknown set item: "${set}"`);
+    }
+
+    appService.transitionPomodoroState(target);
+  };
+
   const pauseTimer = (): void => {
     timerService.pauseTimer();
   };
@@ -72,7 +95,7 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
   };
 
   const setReady = (): void => {
-    appService.setReady();
+    transitionPomodoroState();
   };
 
   const startTimer = (): void => {
