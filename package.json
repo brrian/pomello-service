@@ -1,0 +1,56 @@
+{
+  "name": "pomello-service",
+  "version": "0.0.1-pre",
+  "license": "UNLICENSED",
+  "main": "dist/pomello-service.cjs.js",
+  "module": "dist/pomello-service.esm.js",
+  "browser": "dist/pomello-service.umd.js",
+  "private": true,
+  "scripts": {
+    "build": "del dist && rollup --config",
+    "lint:scripts": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint:staged": "lint-staged",
+    "lint": "npm run lint:scripts",
+    "prepare": "husky install",
+    "prettier": "prettier --write package.json 'src/**/*.ts'",
+    "release": "standard-version",
+    "start": "npm run watch",
+    "test:watch": "jest --coverage --watchAll",
+    "test": "jest --coverage",
+    "typecheck": "tsc --noEmit",
+    "verify": "npm run build && npm run lint:scripts && npm run test",
+    "watch": "rollup --config --watch"
+  },
+  "devDependencies": {
+    "@rollup/plugin-node-resolve": "^13.1.3",
+    "@rollup/plugin-typescript": "^8.3.0",
+    "@types/jest": "^27.4.0",
+    "@typescript-eslint/eslint-plugin": "^5.11.0",
+    "@typescript-eslint/parser": "^5.11.0",
+    "del-cli": "^4.0.1",
+    "eslint": "^8.9.0",
+    "eslint-config-prettier": "^8.3.0",
+    "husky": "^7.0.4",
+    "jest": "^27.5.1",
+    "lint-staged": "^12.3.3",
+    "prettier": "^2.5.1",
+    "rollup": "^2.67.2",
+    "rollup-plugin-terser": "^7.0.2",
+    "standard-version": "^9.3.2",
+    "ts-jest": "^27.1.3",
+    "tslib": "^2.3.1",
+    "typescript": "^4.5.5"
+  },
+  "dependencies": {
+    "@xstate/fsm": "^1.6.4"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": "eslint --cache --fix",
+    "*.{js,jsx,ts,tsx,css,scss,md}": "prettier --write"
+  },
+  "standard-version": {
+    "scripts": {
+      "postcommit": "npm run build; git add dist; git commit --amend --no-edit"
+    }
+  }
+}
