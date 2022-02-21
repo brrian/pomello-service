@@ -25,10 +25,12 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
     ticker: createTicker(),
   });
 
-  const setIndex = 0;
+  let setIndex = 0;
 
   function handleTimerEnd(): void {
     appService.handleTimerEnd();
+
+    incrementSetIndex();
 
     emit('timerEnd', getState());
   }
@@ -39,6 +41,14 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
 
   function handleServiceUpdate(): void {
     emit('update', getState());
+  }
+
+  function incrementSetIndex(): void {
+    setIndex += 1;
+
+    if (setIndex > settings.set.length) {
+      setIndex = 0;
+    }
   }
 
   function transitionPomodoroState(): void {
@@ -60,6 +70,11 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
     }
 
     if (set === 'shortBreak') {
+      timerService.createTimer({
+        time: settings.shortBreakTime,
+        type: TimerType.shortBreak,
+      });
+
       return appService.transitionPomodoroState(AppState.shortBreak);
     }
 
@@ -68,6 +83,10 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
     }
 
     throw new Error(`Unknown set item: "${set}"`);
+  }
+
+  function continueTask(): void {
+    transitionPomodoroState();
   }
 
   function pauseTimer(): void {
@@ -125,6 +144,7 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
   }
 
   return {
+    continueTask,
     pauseTimer,
     selectTask,
     setReady,

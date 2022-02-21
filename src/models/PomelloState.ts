@@ -1,5 +1,5 @@
 export interface PomelloState {
-  value: 'INITIALIZING' | 'SELECT_TASK' | 'TASK' | 'TASK_TIMER_END_PROMPT';
+  value: 'INITIALIZING' | 'SELECT_TASK' | 'TASK' | 'TASK_TIMER_END_PROMPT' | 'SHORT_BREAK';
   currentTaskId: string | null;
   timer: Timer | null;
 }
