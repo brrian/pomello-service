@@ -1,8 +1,8 @@
-import { AppContext } from './AppContext';
-import { AppStateValue } from './AppStateValue';
-
-export type AppState =
-  | { value: AppStateValue.initializing; context: AppContext }
-  | { value: AppStateValue.selectTask; context: AppContext }
-  | { value: AppStateValue.task; context: AppContext & { currentTaskId: string } }
-  | { value: AppStateValue.taskTimerEndPrompt; context: AppContext & { currentTaskId: string } };
+export enum AppState {
+  initializing = 'INITIALIZING',
+  selectTask = 'SELECT_TASK',
+  task = 'TASK',
+  taskTimerEndPrompt = 'TASK_TIMER_END_PROMPT',
+  shortBreak = 'SHORT_BREAK',
+  longBreak = 'LONG_BREAK',
+}

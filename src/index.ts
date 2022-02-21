@@ -2,12 +2,11 @@ import createAppService from './createAppService';
 import createEventEmitter from './createEventEmitter';
 import createTimerService from './createTimerService';
 import {
-  AppPomodoroStateValue,
-  AppStateValue,
-  AppTransitionEvent,
+  AppState,
   PomelloEventMap,
   PomelloServiceConfig,
   PomelloState,
+  PomelloStateValue,
   TimerStateValue,
   TimerTransitionEvent,
   TimerType,
@@ -18,23 +17,12 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
 
   const timerTicker = createTicker();
 
-  const appService = createAppService();
+  const appService = createAppService({
+    onStateChange: handleServiceUpdate,
+  });
   const timerService = createTimerService();
 
   const setIndex = 0;
-
-  const handleAppTransition = ({ state, prevState }: AppTransitionEvent): void => {
-    if (prevState.value === AppStateValue.initializing) {
-      emit('appInitialize', getState());
-    } else if (state.value === AppStateValue.task) {
-      timerService.createTimer({
-        time: settings.taskTime,
-        type: TimerType.task,
-      });
-
-      emit('taskSelect', getState());
-    }
-  };
 
   const handleTimerTransition = ({ state, prevState }: TimerTransitionEvent): void => {
     if (state.value === TimerStateValue.active) {
@@ -62,47 +50,62 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
     }
   };
 
-  const handleServiceUpdate = (): void => {
+  function handleServiceUpdate(): void {
     emit('update', getState());
-  };
+  }
 
-  const transitionPomodoroState = (): void => {
+  function transitionPomodoroState(): void {
     const set = settings.set[setIndex];
 
-    let target: AppPomodoroStateValue | undefined = undefined;
-
     if (set === 'task') {
-      target = AppStateValue.task;
-    } else if (set === 'shortBreak') {
-      target = AppStateValue.shortBreak;
-    } else if (set === 'longBreak') {
-      target = AppStateValue.longBreak;
+      if (appService.getState().context.currentTaskId) {
+        if (!timerService.getState().context.timer) {
+          timerService.createTimer({
+            time: settings.taskTime,
+            type: TimerType.task,
+          });
+        }
+
+        return appService.transitionPomodoroState(AppState.task);
+      } else {
+        return appService.transitionPomodoroState(AppState.selectTask);
+      }
     }
 
-    if (!target) {
-      throw new Error(`Unknown set item: "${set}"`);
+    if (set === 'shortBreak') {
+      return appService.transitionPomodoroState(AppState.shortBreak);
     }
 
-    appService.transitionPomodoroState(target);
-  };
+    if (set === 'longBreak') {
+      return appService.transitionPomodoroState(AppState.longBreak);
+    }
 
-  const pauseTimer = (): void => {
+    throw new Error(`Unknown set item: "${set}"`);
+  }
+
+  function pauseTimer(): void {
     timerService.pauseTimer();
-  };
+  }
 
-  const selectTask = (taskId: string): void => {
+  function selectTask(taskId: string): void {
     appService.selectTask(taskId);
-  };
 
-  const setReady = (): void => {
     transitionPomodoroState();
-  };
 
-  const startTimer = (): void => {
+    emit('taskSelect', getState());
+  }
+
+  function setReady(): void {
+    transitionPomodoroState();
+
+    emit('appInitialize', getState());
+  }
+
+  function startTimer(): void {
     timerService.startTimer();
-  };
+  }
 
-  const getState = (): PomelloState => {
+  function getState(): PomelloState {
     const appState = appService.getState();
     const timerState = timerService.getState();
 
@@ -118,14 +121,11 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
       : null;
 
     return {
-      value: appState.value,
+      value: appState.value as unknown as PomelloStateValue,
       currentTaskId: appState.context.currentTaskId,
       timer,
     };
-  };
-
-  appService.on('transition', handleAppTransition);
-  appService.on('update', handleServiceUpdate);
+  }
 
   timerService.on('transition', handleTimerTransition);
   timerService.on('update', handleServiceUpdate);
