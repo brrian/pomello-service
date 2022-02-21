@@ -58,33 +58,49 @@ describe('Pomello Service', () => {
   it('should transition to the task timer end state', () => {
     const { advanceTimer, attachUpdateHandler, service } = mountPomelloService();
 
-    const handleTimerEnd = jest.fn();
     const handleServiceUpdate = attachUpdateHandler();
 
     service.selectTask('TASK_ID');
     service.startTimer();
-
-    service.on('timerEnd', handleTimerEnd);
 
     advanceTimer();
 
     expect(service.getState()).toMatchObject({
       value: PomelloStateValue.taskTimerEndPrompt,
       currentTaskId: 'TASK_ID',
-      timer: null,
     });
 
-    expect(handleServiceUpdate).toHaveBeenLastCalledWith({
-      value: PomelloStateValue.taskTimerEndPrompt,
-      currentTaskId: 'TASK_ID',
-      timer: null,
-    });
+    expect(handleServiceUpdate).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        value: PomelloStateValue.taskTimerEndPrompt,
+        currentTaskId: 'TASK_ID',
+        timer: null,
+      })
+    );
+  });
 
-    expect(handleTimerEnd).toHaveBeenCalledTimes(1);
-    expect(handleTimerEnd).toHaveBeenCalledWith({
-      value: PomelloStateValue.taskTimerEndPrompt,
-      currentTaskId: 'TASK_ID',
-      timer: null,
-    });
+  it('should transition to the short break state', () => {
+    const { advanceTimer, attachUpdateHandler, service } = mountPomelloService();
+
+    const handleServiceUpdate = attachUpdateHandler();
+
+    service.selectTask('TASK_ID');
+    service.startTimer();
+    advanceTimer();
+    service.continueTask();
+
+    expect(service.getState()).toMatchObject(
+      expect.objectContaining({
+        value: PomelloStateValue.shortBreak,
+        currentTaskId: 'TASK_ID',
+      })
+    );
+
+    expect(handleServiceUpdate).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        value: PomelloStateValue.shortBreak,
+        currentTaskId: 'TASK_ID',
+      })
+    );
   });
 });

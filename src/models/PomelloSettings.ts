@@ -1,5 +1,6 @@
 export interface PomelloSettings {
   set: SetItem[];
+  shortBreakTime: number;
   taskTime: number;
 }
 
