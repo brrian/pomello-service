@@ -7,48 +7,35 @@ import {
   PomelloServiceConfig,
   PomelloState,
   PomelloStateValue,
-  TimerStateValue,
-  TimerTransitionEvent,
+  TimerState,
   TimerType,
 } from './models';
 
 const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) => {
   const { emit, on, off } = createEventEmitter<PomelloEventMap>();
 
-  const timerTicker = createTicker();
-
   const appService = createAppService({
     onStateChange: handleServiceUpdate,
   });
-  const timerService = createTimerService();
+
+  const timerService = createTimerService({
+    onStateChange: handleServiceUpdate,
+    onTimerEnd: handleTimerEnd,
+    onTimerTick: handleTimerTick,
+    ticker: createTicker(),
+  });
 
   const setIndex = 0;
 
-  const handleTimerTransition = ({ state, prevState }: TimerTransitionEvent): void => {
-    if (state.value === TimerStateValue.active) {
-      if (prevState.value === TimerStateValue.ready) {
-        emit('timerStart', getState());
-      } else if (prevState.value === TimerStateValue.paused) {
-        emit('timerResume', getState());
-      }
+  function handleTimerEnd(): void {
+    appService.handleTimerEnd();
 
-      timerTicker.start(() => {
-        timerService.tickTimer();
+    emit('timerEnd', getState());
+  }
 
-        emit('timerTick', getState());
-      });
-    } else if (state.value === TimerStateValue.idle) {
-      timerTicker.stop();
-
-      appService.handleTimerEnd();
-
-      emit('timerEnd', getState());
-    } else if (state.value === TimerStateValue.paused) {
-      timerTicker.stop();
-
-      emit('timerPause', getState());
-    }
-  };
+  function handleTimerTick(): void {
+    emit('timerTick', getState());
+  }
 
   function handleServiceUpdate(): void {
     emit('update', getState());
@@ -85,6 +72,8 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
 
   function pauseTimer(): void {
     timerService.pauseTimer();
+
+    emit('timerPause', getState());
   }
 
   function selectTask(taskId: string): void {
@@ -102,7 +91,15 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
   }
 
   function startTimer(): void {
+    const wasPaused = timerService.getState().value === TimerState.paused;
+
     timerService.startTimer();
+
+    if (wasPaused) {
+      emit('timerResume', getState());
+    } else {
+      emit('timerStart', getState());
+    }
   }
 
   function getState(): PomelloState {
@@ -111,9 +108,9 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
 
     const timer = timerState.context.timer
       ? {
-          isActive: timerState.value === TimerStateValue.active,
+          isActive: timerState.value === TimerState.active,
           isInjected: timerState.context.timer.isInjected,
-          isPaused: timerState.value === TimerStateValue.paused,
+          isPaused: timerState.value === TimerState.paused,
           time: timerState.context.timer.time,
           totalTime: timerState.context.timer.totalTime,
           type: timerState.context.timer.type,
@@ -126,9 +123,6 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
       timer,
     };
   }
-
-  timerService.on('transition', handleTimerTransition);
-  timerService.on('update', handleServiceUpdate);
 
   return {
     pauseTimer,
