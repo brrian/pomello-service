@@ -258,4 +258,57 @@ describe('Pomello Service - Timers', () => {
       },
     });
   });
+
+  it('should automatically start a timer when continuing a task', async () => {
+    const { advanceTimer, attachUpdateHandler, service } = mountPomelloService({
+      settings: {
+        shortBreakTime: 20,
+      },
+    });
+
+    const handleTimerStart = jest.fn();
+    const handleServiceUpdate = attachUpdateHandler();
+
+    service.selectTask('TASK_TIMER_ID');
+    service.startTimer();
+    advanceTimer();
+    service.on('timerStart', handleTimerStart);
+    service.continueTask();
+
+    expect(service.getState().timer).toMatchObject({
+      isActive: true,
+      isInjected: false,
+      isPaused: false,
+      time: 20,
+      totalTime: 20,
+      type: TimerType.shortBreak,
+    });
+
+    expect(handleServiceUpdate).toHaveBeenLastCalledWith({
+      value: PomelloStateValue.shortBreak,
+      currentTaskId: 'TASK_TIMER_ID',
+      timer: {
+        isActive: true,
+        isInjected: false,
+        isPaused: false,
+        time: 20,
+        totalTime: 20,
+        type: TimerType.shortBreak,
+      },
+    });
+
+    expect(handleTimerStart).toHaveBeenCalledTimes(1);
+    expect(handleTimerStart).toHaveBeenLastCalledWith({
+      value: PomelloStateValue.shortBreak,
+      currentTaskId: 'TASK_TIMER_ID',
+      timer: {
+        isActive: true,
+        isInjected: false,
+        isPaused: false,
+        time: 20,
+        totalTime: 20,
+        type: TimerType.shortBreak,
+      },
+    });
+  });
 });
