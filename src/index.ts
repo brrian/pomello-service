@@ -75,7 +75,9 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
         type: TimerType.shortBreak,
       });
 
-      return appService.transitionPomodoroState(AppState.shortBreak);
+      appService.transitionPomodoroState(AppState.shortBreak);
+
+      return startTimer();
     }
 
     if (set === 'longBreak') {
