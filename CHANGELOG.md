@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 0.0.7 (2022-02-22)
+
+### Features
+
+- batch update events together ([#6](https://github.com/brrian/pomello-service/issues/6)) ([3c0b199](https://github.com/brrian/pomello-service/commit/3c0b19973ceb4dab11a5b12e8cbe4a9e316fb9b0))
+
 ### 0.0.6 (2022-02-22)
 
 ### Features
