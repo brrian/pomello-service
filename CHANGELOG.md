@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 0.0.6 (2022-02-22)
+
+### Features
+
+- add auto start timer handling ([#5](https://github.com/brrian/pomello-service/issues/5)) ([55de48e](https://github.com/brrian/pomello-service/commit/55de48e9288acd7535dc5d981dd18ccf171b5e57))
+
 ### 0.0.5 (2022-02-21)
 
 ### Features
