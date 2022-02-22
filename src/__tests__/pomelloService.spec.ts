@@ -27,13 +27,14 @@ describe('Pomello Service', () => {
   });
 
   it('should transition to the task state', () => {
-    const { attachUpdateHandler, service } = mountPomelloService();
+    const { attachUpdateHandler, service, waitForBatchedEvents } = mountPomelloService();
 
     const handleServiceUpdate = attachUpdateHandler();
     const handleTaskSelect = jest.fn();
 
     service.on('taskSelect', handleTaskSelect);
     service.selectTask('TASK_ID');
+    waitForBatchedEvents();
 
     expect(service.getState()).toMatchObject({
       value: PomelloStateValue.task,
@@ -56,14 +57,15 @@ describe('Pomello Service', () => {
   });
 
   it('should transition to the task timer end state', () => {
-    const { advanceTimer, attachUpdateHandler, service } = mountPomelloService();
+    const { advanceTimer, attachUpdateHandler, service, waitForBatchedEvents } =
+      mountPomelloService();
 
     const handleServiceUpdate = attachUpdateHandler();
 
     service.selectTask('TASK_ID');
     service.startTimer();
-
     advanceTimer();
+    waitForBatchedEvents();
 
     expect(service.getState()).toMatchObject({
       value: PomelloStateValue.taskTimerEndPrompt,
@@ -80,7 +82,8 @@ describe('Pomello Service', () => {
   });
 
   it('should transition to the short break state', () => {
-    const { advanceTimer, attachUpdateHandler, service } = mountPomelloService();
+    const { advanceTimer, attachUpdateHandler, service, waitForBatchedEvents } =
+      mountPomelloService();
 
     const handleServiceUpdate = attachUpdateHandler();
 
@@ -88,6 +91,7 @@ describe('Pomello Service', () => {
     service.startTimer();
     advanceTimer();
     service.continueTask();
+    waitForBatchedEvents();
 
     expect(service.getState()).toMatchObject(
       expect.objectContaining({

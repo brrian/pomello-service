@@ -47,4 +47,28 @@ describe('Event Emitter', () => {
 
     expect(() => emit('one', { success: true })).not.toThrowError();
   });
+
+  it('should batch multiple events into a single event', () => {
+    const { on, batchedEmit } = createEventEmitter();
+
+    const handleOneEmit = jest.fn();
+    const handleTwoEmit = jest.fn();
+
+    on('one', handleOneEmit);
+    on('two', handleTwoEmit);
+
+    batchedEmit('one', { count: 1 });
+    batchedEmit('one', { count: 2 });
+    batchedEmit('one', { count: 3 });
+
+    batchedEmit('two', { count: 1 });
+
+    jest.runAllTimers();
+
+    expect(handleOneEmit).toHaveBeenCalledTimes(1);
+    expect(handleTwoEmit).toHaveBeenCalledTimes(1);
+
+    expect(handleOneEmit).toHaveBeenCalledWith({ count: 3 });
+    expect(handleTwoEmit).toHaveBeenCalledWith({ count: 1 });
+  });
 });

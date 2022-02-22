@@ -12,7 +12,7 @@ import {
 } from './models';
 
 const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) => {
-  const { emit, on, off } = createEventEmitter<PomelloEventMap>();
+  const { batchedEmit, emit, on, off } = createEventEmitter<PomelloEventMap>();
 
   const appService = createAppService({
     onStateChange: handleServiceUpdate,
@@ -40,7 +40,7 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
   }
 
   function handleServiceUpdate(): void {
-    emit('update', getState());
+    batchedEmit('update', getState());
   }
 
   function incrementSetIndex(): void {
