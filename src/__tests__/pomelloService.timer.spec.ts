@@ -3,15 +3,15 @@ import mountPomelloService from '../__fixtures__/mountPomelloService';
 
 describe('Pomello Service - Timers', () => {
   it('should create a task timer when a task is selected', () => {
-    const { attachUpdateHandler, service } = mountPomelloService({
+    const { attachUpdateHandler, service, waitForBatchedEvents } = mountPomelloService({
       settings: {
         taskTime: 999,
       },
     });
 
     const handleServiceUpdate = attachUpdateHandler();
-
     service.selectTask('TASK_TIMER_ID');
+    waitForBatchedEvents();
 
     expect(service.getState().timer).toMatchObject({
       isActive: false,
@@ -37,7 +37,7 @@ describe('Pomello Service - Timers', () => {
   });
 
   it('should activate the timer when started', () => {
-    const { attachUpdateHandler, service } = mountPomelloService();
+    const { attachUpdateHandler, service, waitForBatchedEvents } = mountPomelloService();
 
     const handleServiceUpdate = attachUpdateHandler();
     const handleTimerStart = jest.fn();
@@ -45,6 +45,7 @@ describe('Pomello Service - Timers', () => {
     service.on('timerStart', handleTimerStart);
     service.selectTask('TASK_TIMER_ID');
     service.startTimer();
+    waitForBatchedEvents();
 
     expect(service.getState().timer).toMatchObject({
       isActive: true,
@@ -83,17 +84,19 @@ describe('Pomello Service - Timers', () => {
   });
 
   it('should tick the timer when active', () => {
-    const { advanceTimer, attachUpdateHandler, service } = mountPomelloService({
-      settings: {
-        taskTime: 20,
-      },
-    });
+    const { advanceTimer, attachUpdateHandler, service, waitForBatchedEvents } =
+      mountPomelloService({
+        settings: {
+          taskTime: 20,
+        },
+      });
 
     const handleTimerTick = jest.fn();
 
     service.on('timerTick', handleTimerTick);
     service.selectTask('TASK_TIMER_ID');
     service.startTimer();
+    waitForBatchedEvents();
 
     const handleServiceUpdate = attachUpdateHandler();
 
@@ -138,11 +141,12 @@ describe('Pomello Service - Timers', () => {
   });
 
   it('should pause an active timer', () => {
-    const { advanceTimer, attachUpdateHandler, service } = mountPomelloService({
-      settings: {
-        taskTime: 20,
-      },
-    });
+    const { advanceTimer, attachUpdateHandler, service, waitForBatchedEvents } =
+      mountPomelloService({
+        settings: {
+          taskTime: 20,
+        },
+      });
 
     const handleTimerTick = jest.fn();
     const handleTimerPause = jest.fn();
@@ -157,6 +161,7 @@ describe('Pomello Service - Timers', () => {
     advanceTimer(10);
     service.pauseTimer();
     advanceTimer(30);
+    waitForBatchedEvents();
 
     expect(service.getState().timer).toMatchObject({
       isActive: false,
@@ -198,11 +203,12 @@ describe('Pomello Service - Timers', () => {
   });
 
   it('should resume a paused timer', () => {
-    const { advanceTimer, attachUpdateHandler, service } = mountPomelloService({
-      settings: {
-        taskTime: 20,
-      },
-    });
+    const { advanceTimer, attachUpdateHandler, service, waitForBatchedEvents } =
+      mountPomelloService({
+        settings: {
+          taskTime: 20,
+        },
+      });
 
     const handleTimerTick = jest.fn();
     const handleTimerResume = jest.fn();
@@ -219,6 +225,7 @@ describe('Pomello Service - Timers', () => {
     advanceTimer(30);
     service.startTimer();
     advanceTimer(5);
+    waitForBatchedEvents();
 
     expect(service.getState().timer).toMatchObject({
       isActive: true,
@@ -260,11 +267,12 @@ describe('Pomello Service - Timers', () => {
   });
 
   it('should automatically start a timer when continuing a task', async () => {
-    const { advanceTimer, attachUpdateHandler, service } = mountPomelloService({
-      settings: {
-        shortBreakTime: 20,
-      },
-    });
+    const { advanceTimer, attachUpdateHandler, service, waitForBatchedEvents } =
+      mountPomelloService({
+        settings: {
+          shortBreakTime: 20,
+        },
+      });
 
     const handleTimerStart = jest.fn();
     const handleServiceUpdate = attachUpdateHandler();
@@ -274,6 +282,7 @@ describe('Pomello Service - Timers', () => {
     advanceTimer();
     service.on('timerStart', handleTimerStart);
     service.continueTask();
+    waitForBatchedEvents();
 
     expect(service.getState().timer).toMatchObject({
       isActive: true,

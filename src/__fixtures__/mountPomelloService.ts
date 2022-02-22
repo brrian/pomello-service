@@ -13,7 +13,7 @@ const defaultSettings: PomelloSettings = {
   taskTime: 30,
 };
 
-const createTicker = (): Ticker => {
+function createTicker(): Ticker {
   let tickId: NodeJS.Timeout | undefined;
 
   return {
@@ -26,7 +26,7 @@ const createTicker = (): Ticker => {
       }
     },
   };
-};
+}
 
 export default function mountPomelloService({
   onServiceUpdate = jest.fn(),
@@ -45,23 +45,28 @@ export default function mountPomelloService({
     service.setReady();
   }
 
-  const advanceTimer = (seconds?: number) => {
+  function advanceTimer(seconds?: number) {
     if (!seconds) {
       jest.runAllTimers();
     } else {
       jest.advanceTimersByTime(seconds * 1000);
     }
-  };
+  }
 
-  const attachUpdateHandler = () => {
+  function attachUpdateHandler() {
     service.on('update', onServiceUpdate);
 
     return onServiceUpdate;
-  };
+  }
+
+  function waitForBatchedEvents() {
+    jest.advanceTimersByTime(1);
+  }
 
   return {
     advanceTimer,
     attachUpdateHandler,
     service,
+    waitForBatchedEvents,
   };
 }
