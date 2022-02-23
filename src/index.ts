@@ -27,9 +27,13 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
   let setIndex = 0;
 
   function handleTimerEnd(): void {
-    appService.handleTimerEnd();
-
     incrementSetIndex();
+
+    if (appService.getState().value === AppState.task) {
+      appService.setAppState(AppState.taskTimerEndPrompt);
+    } else {
+      transitionPomodoroState();
+    }
 
     emit('timerEnd', getState());
   }
@@ -62,9 +66,9 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
           });
         }
 
-        return appService.transitionPomodoroState(AppState.task);
+        return appService.setAppState(AppState.task);
       } else {
-        return appService.transitionPomodoroState(AppState.selectTask);
+        return appService.setAppState(AppState.selectTask);
       }
     }
 
@@ -74,13 +78,13 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
         type: TimerType.shortBreak,
       });
 
-      appService.transitionPomodoroState(AppState.shortBreak);
+      appService.setAppState(AppState.shortBreak);
 
       return startTimer();
     }
 
     if (set === 'longBreak') {
-      return appService.transitionPomodoroState(AppState.longBreak);
+      return appService.setAppState(AppState.longBreak);
     }
 
     throw new Error(`Unknown set item: "${set}"`);
