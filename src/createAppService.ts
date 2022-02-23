@@ -10,24 +10,19 @@ export default function createAppService({ onStateChange }: CreateAppServiceOpti
     onStateChange,
   });
 
-  function handleTimerEnd(): void {
-    setState(AppState.taskTimerEndPrompt);
-  }
-
   function selectTask(taskId: string): void {
     setState(AppState.task, {
       currentTaskId: taskId,
     });
   }
 
-  function transitionPomodoroState(target: AppState): void {
+  function setAppState(target: AppState): void {
     setState(target);
   }
 
   return {
-    handleTimerEnd,
     selectTask,
-    transitionPomodoroState,
+    setAppState,
     getState,
   };
 }
