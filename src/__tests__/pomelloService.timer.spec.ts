@@ -1,4 +1,4 @@
-import { PomelloStateValue, TimerType } from '../models';
+import { TimerType } from '../models';
 import mountPomelloService from '../__fixtures__/mountPomelloService';
 
 describe('Pomello Service - Timers', () => {
@@ -23,7 +23,7 @@ describe('Pomello Service - Timers', () => {
     });
 
     expect(handleServiceUpdate).toHaveBeenCalledWith({
-      value: PomelloStateValue.task,
+      value: 'TASK',
       currentTaskId: 'TASK_TIMER_ID',
       timer: {
         isActive: false,
@@ -57,7 +57,7 @@ describe('Pomello Service - Timers', () => {
     });
 
     expect(handleServiceUpdate).toHaveBeenCalledWith({
-      value: PomelloStateValue.task,
+      value: 'TASK',
       currentTaskId: 'TASK_TIMER_ID',
       timer: {
         isActive: true,
@@ -70,7 +70,7 @@ describe('Pomello Service - Timers', () => {
     });
 
     expect(handleTimerStart).toHaveBeenCalledWith({
-      value: PomelloStateValue.task,
+      value: 'TASK',
       currentTaskId: 'TASK_TIMER_ID',
       timer: {
         isActive: true,
@@ -113,7 +113,7 @@ describe('Pomello Service - Timers', () => {
 
     expect(handleServiceUpdate).toHaveBeenCalledTimes(10);
     expect(handleServiceUpdate).toHaveBeenLastCalledWith({
-      value: PomelloStateValue.task,
+      value: 'TASK',
       currentTaskId: 'TASK_TIMER_ID',
       timer: {
         isActive: true,
@@ -127,7 +127,7 @@ describe('Pomello Service - Timers', () => {
 
     expect(handleTimerTick).toHaveBeenCalledTimes(10);
     expect(handleTimerTick).toHaveBeenLastCalledWith({
-      value: PomelloStateValue.task,
+      value: 'TASK',
       currentTaskId: 'TASK_TIMER_ID',
       timer: {
         isActive: true,
@@ -173,7 +173,7 @@ describe('Pomello Service - Timers', () => {
     });
 
     expect(handleServiceUpdate).toHaveBeenLastCalledWith({
-      value: PomelloStateValue.task,
+      value: 'TASK',
       currentTaskId: 'TASK_TIMER_ID',
       timer: {
         isActive: false,
@@ -189,7 +189,7 @@ describe('Pomello Service - Timers', () => {
 
     expect(handleTimerPause).toHaveBeenCalledTimes(1);
     expect(handleTimerPause).toHaveBeenLastCalledWith({
-      value: PomelloStateValue.task,
+      value: 'TASK',
       currentTaskId: 'TASK_TIMER_ID',
       timer: {
         isActive: false,
@@ -237,7 +237,7 @@ describe('Pomello Service - Timers', () => {
     });
 
     expect(handleServiceUpdate).toHaveBeenLastCalledWith({
-      value: PomelloStateValue.task,
+      value: 'TASK',
       currentTaskId: 'TASK_TIMER_ID',
       timer: {
         isActive: true,
@@ -253,7 +253,7 @@ describe('Pomello Service - Timers', () => {
 
     expect(handleTimerResume).toHaveBeenCalledTimes(1);
     expect(handleTimerResume).toHaveBeenLastCalledWith({
-      value: PomelloStateValue.task,
+      value: 'TASK',
       currentTaskId: 'TASK_TIMER_ID',
       timer: {
         isActive: true,
@@ -294,7 +294,7 @@ describe('Pomello Service - Timers', () => {
     });
 
     expect(handleServiceUpdate).toHaveBeenLastCalledWith({
-      value: PomelloStateValue.shortBreak,
+      value: 'SHORT_BREAK',
       currentTaskId: 'TASK_TIMER_ID',
       timer: {
         isActive: true,
@@ -308,7 +308,7 @@ describe('Pomello Service - Timers', () => {
 
     expect(handleTimerStart).toHaveBeenCalledTimes(1);
     expect(handleTimerStart).toHaveBeenLastCalledWith({
-      value: PomelloStateValue.shortBreak,
+      value: 'SHORT_BREAK',
       currentTaskId: 'TASK_TIMER_ID',
       timer: {
         isActive: true,

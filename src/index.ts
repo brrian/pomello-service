@@ -6,7 +6,6 @@ import {
   PomelloEventMap,
   PomelloServiceConfig,
   PomelloState,
-  PomelloStateValue,
   TimerState,
   TimerType,
 } from './models';
@@ -139,7 +138,7 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
       : null;
 
     return {
-      value: appState.value as unknown as PomelloStateValue,
+      value: appState.value,
       currentTaskId: appState.context.currentTaskId,
       timer,
     };
