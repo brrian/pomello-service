@@ -8,7 +8,6 @@ export type { PomelloEventMap } from './PomelloEventMap';
 export type { PomelloServiceConfig } from './PomelloServiceConfig';
 export type { PomelloSettings } from './PomelloSettings';
 export type { PomelloState } from './PomelloState';
-export { PomelloStateValue } from './PomelloStateValue';
 export type { State } from './State';
 export type { Ticker } from './Ticker';
 export type { Timer } from './Timer';
