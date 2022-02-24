@@ -20,6 +20,12 @@ export default function createAppService({ onStateChange }: CreateAppServiceOpti
     setState(target);
   }
 
+  function switchTask(): void {
+    setState(AppState.selectTask, {
+      currentTaskId: null,
+    });
+  }
+
   function unsetCurrentTask(): void {
     setState(null, {
       currentTaskId: null,
@@ -27,9 +33,10 @@ export default function createAppService({ onStateChange }: CreateAppServiceOpti
   }
 
   return {
+    getState,
     selectTask,
     setAppState,
-    getState,
+    switchTask,
     unsetCurrentTask,
   };
 }
