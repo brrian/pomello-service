@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 0.0.10 (2022-02-24)
+
+### Features
+
+- add select new task method ([#9](https://github.com/brrian/pomello-service/issues/9)) ([db94fec](https://github.com/brrian/pomello-service/commit/db94fece86ba3a742b597b4a10af1f5b462a6007))
+
 ### 0.0.9 (2022-02-23)
 
 ### 0.0.8 (2022-02-23)
