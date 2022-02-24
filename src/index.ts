@@ -82,6 +82,11 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
     }
 
     if (set === 'longBreak') {
+      timerService.createTimer({
+        time: settings.longBreakTime,
+        type: TimerType.longBreak,
+      });
+
       return appService.setAppState(AppState.longBreak);
     }
 
