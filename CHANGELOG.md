@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 0.0.13 (2022-02-24)
+
+### Features
+
+- add switch task handling ([#12](https://github.com/brrian/pomello-service/issues/12)) ([b071d0d](https://github.com/brrian/pomello-service/commit/b071d0d56ce8eec7410fb2f6633b0ae4a2527a42))
+
 ### 0.0.12 (2022-02-24)
 
 ### 0.0.11 (2022-02-24)
