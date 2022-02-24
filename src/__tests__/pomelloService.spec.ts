@@ -80,9 +80,13 @@ describe('Pomello Service', () => {
     );
   });
 
-  it('should transition to the short break state', () => {
+  it('should transition to after continuing a task', () => {
     const { advanceTimer, attachUpdateHandler, service, waitForBatchedEvents } =
-      mountPomelloService();
+      mountPomelloService({
+        settings: {
+          set: ['task', 'shortBreak'],
+        },
+      });
 
     const handleServiceUpdate = attachUpdateHandler();
 
@@ -103,6 +107,37 @@ describe('Pomello Service', () => {
       expect.objectContaining({
         value: 'SHORT_BREAK',
         currentTaskId: 'TASK_ID',
+      })
+    );
+  });
+
+  it('should transition after selecting a new task', () => {
+    const { advanceTimer, attachUpdateHandler, service, waitForBatchedEvents } =
+      mountPomelloService({
+        settings: {
+          set: ['task', 'longBreak'],
+        },
+      });
+
+    const handleServiceUpdate = attachUpdateHandler();
+
+    service.selectTask('TASK_ID');
+    service.startTimer();
+    advanceTimer();
+    service.selectNewTask();
+    waitForBatchedEvents();
+
+    expect(service.getState()).toMatchObject(
+      expect.objectContaining({
+        value: 'LONG_BREAK',
+        currentTaskId: null,
+      })
+    );
+
+    expect(handleServiceUpdate).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        value: 'LONG_BREAK',
+        currentTaskId: null,
       })
     );
   });

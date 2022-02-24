@@ -49,7 +49,7 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
   function incrementSetIndex(): void {
     setIndex += 1;
 
-    if (setIndex > settings.set.length) {
+    if (setIndex >= settings.set.length) {
       setIndex = 0;
     }
   }
@@ -78,9 +78,7 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
         type: TimerType.shortBreak,
       });
 
-      appService.setAppState(AppState.shortBreak);
-
-      return startTimer();
+      return appService.setAppState(AppState.shortBreak);
     }
 
     if (set === 'longBreak') {
@@ -92,12 +90,22 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
 
   function continueTask(): void {
     transitionPomodoroState();
+
+    startTimer();
   }
 
   function pauseTimer(): void {
     timerService.pauseTimer();
 
     emit('timerPause', getState());
+  }
+
+  function selectNewTask(): void {
+    appService.unsetCurrentTask();
+
+    transitionPomodoroState();
+
+    startTimer();
   }
 
   function selectTask(taskId: string): void {
@@ -151,6 +159,7 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
   return {
     continueTask,
     pauseTimer,
+    selectNewTask,
     selectTask,
     setReady,
     startTimer,
