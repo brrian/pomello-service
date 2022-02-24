@@ -139,6 +139,10 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
     }
   }
 
+  function switchTask(): void {
+    appService.switchTask();
+  }
+
   function getState(): PomelloState {
     const appState = appService.getState();
     const timerState = timerService.getState();
@@ -168,6 +172,7 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
     selectTask,
     setReady,
     startTimer,
+    switchTask,
     getState,
     on,
     off,

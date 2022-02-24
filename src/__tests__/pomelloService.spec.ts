@@ -141,4 +141,53 @@ describe('Pomello Service', () => {
       })
     );
   });
+
+  it('should be able to switch tasks', () => {
+    const { advanceTimer, attachUpdateHandler, service, waitForBatchedEvents } =
+      mountPomelloService({
+        settings: {
+          set: ['task'],
+          taskTime: 30,
+        },
+      });
+
+    const handleServiceUpdate = attachUpdateHandler();
+
+    service.selectTask('TASK_ID');
+    service.startTimer();
+    advanceTimer(10);
+    service.switchTask();
+    waitForBatchedEvents();
+
+    expect(service.getState()).toMatchObject(
+      expect.objectContaining({
+        value: 'SELECT_TASK',
+        currentTaskId: null,
+      })
+    );
+
+    expect(handleServiceUpdate).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        value: 'SELECT_TASK',
+        currentTaskId: null,
+      })
+    );
+
+    service.selectTask('TASK_ID_2');
+    waitForBatchedEvents();
+
+    expect(service.getState()).toMatchObject(
+      expect.objectContaining({
+        value: 'TASK',
+        currentTaskId: 'TASK_ID_2',
+      })
+    );
+
+    expect(handleServiceUpdate).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        value: 'TASK',
+        currentTaskId: 'TASK_ID_2',
+      })
+    );
+  });
 });

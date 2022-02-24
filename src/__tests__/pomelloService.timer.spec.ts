@@ -320,4 +320,34 @@ describe('Pomello Service - Timers', () => {
       },
     });
   });
+
+  it('should use the existing task timer when switching tasks', () => {
+    const { advanceTimer, service } = mountPomelloService({
+      settings: {
+        set: ['task'],
+        taskTime: 30,
+      },
+    });
+
+    const handleTimerStart = jest.fn();
+    service.on('timerStart', handleTimerStart);
+
+    service.selectTask('TASK_TIMER_ID');
+    service.startTimer();
+    advanceTimer(10);
+    service.switchTask();
+    advanceTimer(2);
+    service.selectTask('NEW_TASK_ID');
+
+    expect(service.getState().timer).toMatchObject({
+      isActive: true,
+      isInjected: false,
+      isPaused: false,
+      time: 18,
+      totalTime: 30,
+      type: TimerType.task,
+    });
+
+    expect(handleTimerStart).toHaveBeenCalledTimes(1);
+  });
 });
