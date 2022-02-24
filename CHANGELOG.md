@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 0.0.11 (2022-02-24)
+
+### Features
+
+- add long break handling ([#10](https://github.com/brrian/pomello-service/issues/10)) ([d3d4731](https://github.com/brrian/pomello-service/commit/d3d4731a8437011d329913a892b8e56588ba7555))
+
 ### 0.0.10 (2022-02-24)
 
 ### Features
