@@ -350,4 +350,44 @@ describe('Pomello Service - Timers', () => {
 
     expect(handleTimerStart).toHaveBeenCalledTimes(1);
   });
+
+  it('should destroy the timer when skipped', () => {
+    const { advanceTimer, service } = mountPomelloService({
+      settings: {
+        longBreakTime: 15,
+        set: ['shortBreak', 'longBreak'],
+        shortBreakTime: 10,
+      },
+    });
+
+    const handleTimerSkip = jest.fn();
+    service.on('timerSkip', handleTimerSkip);
+
+    service.startTimer();
+    advanceTimer(5);
+    service.skipTimer();
+
+    expect(service.getState().timer).toMatchObject({
+      isActive: false,
+      isInjected: false,
+      isPaused: false,
+      time: 15,
+      totalTime: 15,
+      type: TimerType.longBreak,
+    });
+
+    expect(handleTimerSkip).toHaveBeenCalledTimes(1);
+    expect(handleTimerSkip).toHaveBeenLastCalledWith({
+      value: 'SHORT_BREAK',
+      currentTaskId: null,
+      timer: {
+        isActive: true,
+        isInjected: false,
+        isPaused: false,
+        time: 5,
+        totalTime: 10,
+        type: TimerType.shortBreak,
+      },
+    });
+  });
 });

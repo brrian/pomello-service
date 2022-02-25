@@ -6,6 +6,7 @@ export type PomelloEventMap = {
   timerEnd: PomelloState;
   timerPause: PomelloState;
   timerResume: PomelloState;
+  timerSkip: PomelloState;
   timerStart: PomelloState;
   timerTick: PomelloState;
   update: PomelloState;

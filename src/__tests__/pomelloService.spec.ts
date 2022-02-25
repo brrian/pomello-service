@@ -190,4 +190,35 @@ describe('Pomello Service', () => {
       })
     );
   });
+
+  it('should transition after skipping the timer', () => {
+    const { advanceTimer, attachUpdateHandler, service, waitForBatchedEvents } =
+      mountPomelloService({
+        settings: {
+          set: ['shortBreak', 'task'],
+          shortBreakTime: 30,
+        },
+      });
+
+    const handleServiceUpdate = attachUpdateHandler();
+
+    service.startTimer();
+    advanceTimer(10);
+    service.skipTimer();
+    waitForBatchedEvents();
+
+    expect(service.getState()).toMatchObject(
+      expect.objectContaining({
+        value: 'SELECT_TASK',
+        currentTaskId: null,
+      })
+    );
+
+    expect(handleServiceUpdate).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        value: 'SELECT_TASK',
+        currentTaskId: null,
+      })
+    );
+  });
 });
