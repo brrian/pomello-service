@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 0.0.14 (2022-02-25)
+
+### Features
+
+- add skip timer handling ([#13](https://github.com/brrian/pomello-service/issues/13)) ([6ac2ddc](https://github.com/brrian/pomello-service/commit/6ac2ddc9cd358b9a39c846f0510199d3e567b46c))
+
 ### 0.0.13 (2022-02-24)
 
 ### Features
