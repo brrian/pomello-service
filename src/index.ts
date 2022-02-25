@@ -127,6 +127,16 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
     emit('appInitialize', getState());
   }
 
+  function skipTimer(): void {
+    emit('timerSkip', getState());
+
+    timerService.destroyTimer();
+
+    incrementSetIndex();
+
+    transitionPomodoroState();
+  }
+
   function startTimer(): void {
     const wasPaused = timerService.getState().value === TimerState.paused;
 
@@ -171,6 +181,7 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
     selectNewTask,
     selectTask,
     setReady,
+    skipTimer,
     startTimer,
     switchTask,
     getState,

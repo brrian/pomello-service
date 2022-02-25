@@ -55,6 +55,12 @@ const createTimerService = ({
     });
   }
 
+  function destroyTimer(): void {
+    setState(TimerState.idle, { timer: null });
+
+    ticker.stop();
+  }
+
   function pauseTimer(): void {
     setState(TimerState.paused);
 
@@ -69,6 +75,7 @@ const createTimerService = ({
 
   return {
     createTimer,
+    destroyTimer,
     pauseTimer,
     startTimer,
     getState,
