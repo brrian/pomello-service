@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 0.0.16 (2022-02-26)
+
+### Features
+
+- add void task handling ([#15](https://github.com/brrian/pomello-service/issues/15)) ([4a3d3c6](https://github.com/brrian/pomello-service/commit/4a3d3c62b785e5a5dbbe1117db6ee14d0ea9f514))
+
 ### 0.0.15 (2022-02-26)
 
 ### Features
