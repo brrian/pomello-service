@@ -4,6 +4,7 @@ export type { CreateAppServiceOptions } from './CreateAppServiceOptions';
 export type { CreateTimerOptions } from './CreateTimerOptions';
 export type { CreateTimerServiceOptions } from './CreateTimerServiceOptions';
 export type { EventObject } from './EventObject';
+export type { PomelloEvent } from './PomelloEvent';
 export type { PomelloEventMap } from './PomelloEventMap';
 export type { PomelloServiceConfig } from './PomelloServiceConfig';
 export type { PomelloSettings } from './PomelloSettings';

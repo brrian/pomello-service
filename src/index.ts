@@ -3,6 +3,7 @@ import createEventEmitter from './createEventEmitter';
 import createTimerService from './createTimerService';
 import {
   AppState,
+  PomelloEvent,
   PomelloEventMap,
   PomelloServiceConfig,
   PomelloState,
@@ -48,6 +49,22 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
 
   function handleServiceUpdate(): void {
     batchedEmit('update', getState());
+  }
+
+  function createPomelloEvent(): PomelloEvent {
+    const { timer } = timerService.getState().context;
+
+    return {
+      taskId: appService.getState().context.currentTaskId,
+      timer: timer
+        ? {
+            time: timer.time,
+            totalTime: timer.totalTime,
+            type: timer.type,
+          }
+        : null,
+      timestamp: Date.now(),
+    };
   }
 
   function decrementSetIndex(): void {
@@ -156,13 +173,13 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
 
     transitionPomodoroState();
 
-    emit('taskSelect', getState());
+    emit('taskSelect', createPomelloEvent());
   }
 
   function setReady(): void {
     transitionPomodoroState();
 
-    emit('appInitialize', getState());
+    emit('appInitialize', createPomelloEvent());
   }
 
   function skipTimer(): void {
@@ -198,7 +215,7 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
   }
 
   function voidTask(): void {
-    emit('taskVoid', getState());
+    emit('taskVoid', createPomelloEvent());
 
     if (timerService.getState().value === TimerState.active) {
       timerService.destroyTimer();
