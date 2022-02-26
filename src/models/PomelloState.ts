@@ -3,7 +3,7 @@ export interface PomelloState {
     | 'INITIALIZING'
     | 'SELECT_TASK'
     | 'TASK'
-    | 'TASK_FINISH_PROMPT'
+    | 'TASK_COMPLETE_PROMPT'
     | 'TASK_VOID_PROMPT'
     | 'TASK_TIMER_END_PROMPT'
     | 'SHORT_BREAK'
