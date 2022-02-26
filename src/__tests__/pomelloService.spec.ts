@@ -241,14 +241,14 @@ describe('Pomello Service', () => {
 
     expect(service.getState()).toMatchObject(
       expect.objectContaining({
-        value: 'TASK_FINISH_PROMPT',
+        value: 'TASK_COMPLETE_PROMPT',
         currentTaskId: 'TASK_ID',
       })
     );
 
     expect(handleServiceUpdate).toHaveBeenLastCalledWith(
       expect.objectContaining({
-        value: 'TASK_FINISH_PROMPT',
+        value: 'TASK_COMPLETE_PROMPT',
         currentTaskId: 'TASK_ID',
       })
     );

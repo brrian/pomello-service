@@ -11,7 +11,7 @@ export default function createAppService({ onStateChange }: CreateAppServiceOpti
   });
 
   function completeTask(): void {
-    setState(AppState.taskFinishPrompt);
+    setState(AppState.taskCompletePrompt);
   }
 
   function selectTask(taskId: string): void {
