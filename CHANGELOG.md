@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 0.0.17 (2022-02-26)
+
+### Features
+
+- align complete task naming ([#16](https://github.com/brrian/pomello-service/issues/16)) ([a9a536a](https://github.com/brrian/pomello-service/commit/a9a536a8fb2c6836db42530a769f061ff0aa4ddb))
+
 ### 0.0.16 (2022-02-26)
 
 ### Features
