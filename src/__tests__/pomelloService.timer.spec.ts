@@ -390,4 +390,39 @@ describe('Pomello Service - Timers', () => {
       },
     });
   });
+
+  it('should use the existing task timer when completing a task', () => {
+    const { advanceTimer, service } = mountPomelloService({
+      settings: {
+        set: ['task'],
+        taskTime: 30,
+      },
+    });
+
+    service.selectTask('TASK_ID');
+    service.startTimer();
+    advanceTimer(10);
+    service.completeTask();
+
+    expect(service.getState().timer).toMatchObject({
+      isActive: true,
+      isInjected: false,
+      isPaused: false,
+      time: 20,
+      totalTime: 30,
+      type: TimerType.task,
+    });
+
+    advanceTimer(2);
+    service.taskCompleteHandled();
+
+    expect(service.getState().timer).toMatchObject({
+      isActive: true,
+      isInjected: false,
+      isPaused: false,
+      time: 18,
+      totalTime: 30,
+      type: TimerType.task,
+    });
+  });
 });

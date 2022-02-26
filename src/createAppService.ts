@@ -10,6 +10,10 @@ export default function createAppService({ onStateChange }: CreateAppServiceOpti
     onStateChange,
   });
 
+  function completeTask(): void {
+    setState(AppState.taskFinishPrompt);
+  }
+
   function selectTask(taskId: string): void {
     setState(AppState.task, {
       currentTaskId: taskId,
@@ -33,6 +37,7 @@ export default function createAppService({ onStateChange }: CreateAppServiceOpti
   }
 
   return {
+    completeTask,
     getState,
     selectTask,
     setAppState,

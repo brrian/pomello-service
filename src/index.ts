@@ -93,6 +93,10 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
     throw new Error(`Unknown set item: "${set}"`);
   }
 
+  function completeTask(): void {
+    appService.completeTask();
+  }
+
   function continueTask(): void {
     transitionPomodoroState();
 
@@ -153,6 +157,12 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
     appService.switchTask();
   }
 
+  function taskCompleteHandled(): void {
+    appService.unsetCurrentTask();
+
+    transitionPomodoroState();
+  }
+
   function getState(): PomelloState {
     const appState = appService.getState();
     const timerState = timerService.getState();
@@ -176,7 +186,11 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
   }
 
   return {
+    completeTask,
     continueTask,
+    getState,
+    off,
+    on,
     pauseTimer,
     selectNewTask,
     selectTask,
@@ -184,9 +198,7 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
     skipTimer,
     startTimer,
     switchTask,
-    getState,
-    on,
-    off,
+    taskCompleteHandled,
   };
 };
 

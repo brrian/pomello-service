@@ -221,4 +221,54 @@ describe('Pomello Service', () => {
       })
     );
   });
+
+  it('should transition after completing a task', () => {
+    const { advanceTimer, attachUpdateHandler, service, waitForBatchedEvents } =
+      mountPomelloService({
+        settings: {
+          set: ['task'],
+          taskTime: 30,
+        },
+      });
+
+    const handleServiceUpdate = attachUpdateHandler();
+
+    service.selectTask('TASK_ID');
+    service.startTimer();
+    advanceTimer(10);
+    service.completeTask();
+    waitForBatchedEvents();
+
+    expect(service.getState()).toMatchObject(
+      expect.objectContaining({
+        value: 'TASK_FINISH_PROMPT',
+        currentTaskId: 'TASK_ID',
+      })
+    );
+
+    expect(handleServiceUpdate).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        value: 'TASK_FINISH_PROMPT',
+        currentTaskId: 'TASK_ID',
+      })
+    );
+
+    advanceTimer(2);
+    service.taskCompleteHandled();
+    waitForBatchedEvents();
+
+    expect(service.getState()).toMatchObject(
+      expect.objectContaining({
+        value: 'SELECT_TASK',
+        currentTaskId: null,
+      })
+    );
+
+    expect(handleServiceUpdate).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        value: 'SELECT_TASK',
+        currentTaskId: null,
+      })
+    );
+  });
 });
