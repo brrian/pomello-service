@@ -32,7 +32,7 @@ const createTimerService = ({
 
         ticker.stop();
 
-        onTimerEnd();
+        onTimerEnd(timer);
       } else {
         setState(null, {
           timer: {

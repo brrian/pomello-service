@@ -425,4 +425,61 @@ describe('Pomello Service - Timers', () => {
       type: TimerType.task,
     });
   });
+
+  it('should destroy the timer when a task is voided', () => {
+    const { advanceTimer, service } = mountPomelloService({
+      settings: {
+        set: ['task'],
+        taskTime: 30,
+      },
+    });
+
+    service.selectTask('TASK_ID');
+    service.startTimer();
+    advanceTimer(10);
+    service.voidTask();
+
+    expect(service.getState().timer).toBeNull();
+  });
+
+  it('should inject a short break after handling a void prompt', () => {
+    const { advanceTimer, service } = mountPomelloService({
+      settings: {
+        set: ['task'],
+        shortBreakTime: 10,
+      },
+    });
+
+    const handleTimerStart = jest.fn();
+    service.on('timerStart', handleTimerStart);
+
+    service.selectTask('TASK_ID');
+    service.startTimer();
+    advanceTimer();
+    service.voidTask();
+    service.voidPromptHandled();
+
+    expect(service.getState().timer).toMatchObject({
+      isActive: true,
+      isInjected: true,
+      isPaused: false,
+      time: 10,
+      totalTime: 10,
+      type: TimerType.shortBreak,
+    });
+
+    expect(handleTimerStart).toHaveBeenCalledTimes(2);
+    expect(handleTimerStart).toHaveBeenLastCalledWith({
+      value: 'SHORT_BREAK',
+      currentTaskId: 'TASK_ID',
+      timer: {
+        isActive: true,
+        isInjected: true,
+        isPaused: false,
+        time: 10,
+        totalTime: 10,
+        type: TimerType.shortBreak,
+      },
+    });
+  });
 });

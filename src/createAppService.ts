@@ -36,6 +36,10 @@ export default function createAppService({ onStateChange }: CreateAppServiceOpti
     });
   }
 
+  function voidTask(): void {
+    setState(AppState.taskVoidPrompt);
+  }
+
   return {
     completeTask,
     getState,
@@ -43,5 +47,6 @@ export default function createAppService({ onStateChange }: CreateAppServiceOpti
     setAppState,
     switchTask,
     unsetCurrentTask,
+    voidTask,
   };
 }
