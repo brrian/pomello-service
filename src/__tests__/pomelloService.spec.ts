@@ -271,4 +271,109 @@ describe('Pomello Service', () => {
       })
     );
   });
+
+  it('should transition after voiding a task when the timer has ended', () => {
+    const { advanceTimer, attachUpdateHandler, service, waitForBatchedEvents } =
+      mountPomelloService({
+        settings: {
+          set: ['task', 'shortBreak'],
+        },
+      });
+
+    const handleServiceUpdate = attachUpdateHandler();
+    const handleTaskVoid = jest.fn();
+    service.on('taskVoid', handleTaskVoid);
+
+    service.selectTask('TASK_ID');
+    service.startTimer();
+    advanceTimer();
+    service.voidTask();
+    waitForBatchedEvents();
+
+    expect(service.getState()).toMatchObject(
+      expect.objectContaining({
+        value: 'TASK_VOID_PROMPT',
+        currentTaskId: 'TASK_ID',
+      })
+    );
+
+    expect(handleServiceUpdate).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        value: 'TASK_VOID_PROMPT',
+        currentTaskId: 'TASK_ID',
+      })
+    );
+
+    expect(handleTaskVoid).toHaveBeenCalledTimes(1);
+    expect(handleTaskVoid).toHaveBeenCalledWith({
+      value: 'TASK_TIMER_END_PROMPT',
+      currentTaskId: 'TASK_ID',
+      timer: null,
+    });
+  });
+
+  it('should transition to a short break after handling a void prompt', () => {
+    const { advanceTimer, attachUpdateHandler, service, waitForBatchedEvents } =
+      mountPomelloService({
+        settings: {
+          set: ['task', 'shortBreak'],
+        },
+      });
+
+    const handleServiceUpdate = attachUpdateHandler();
+
+    service.selectTask('TASK_ID');
+    service.startTimer();
+    advanceTimer();
+    service.voidTask();
+    service.voidPromptHandled();
+    waitForBatchedEvents();
+
+    expect(service.getState()).toMatchObject(
+      expect.objectContaining({
+        value: 'SHORT_BREAK',
+        currentTaskId: 'TASK_ID',
+      })
+    );
+
+    expect(handleServiceUpdate).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        value: 'SHORT_BREAK',
+        currentTaskId: 'TASK_ID',
+      })
+    );
+  });
+
+  it("should repeat the task after a voided tasks's injected short break has ended", () => {
+    const { advanceTimer, attachUpdateHandler, service, waitForBatchedEvents } =
+      mountPomelloService({
+        settings: {
+          set: ['task', 'longBreak'],
+        },
+      });
+
+    const handleServiceUpdate = attachUpdateHandler();
+
+    service.selectTask('TASK_ID');
+    service.startTimer();
+    advanceTimer();
+    service.voidTask();
+    service.voidPromptHandled();
+    advanceTimer();
+    waitForBatchedEvents();
+
+    expect(service.getState()).toMatchObject(
+      expect.objectContaining({
+        value: 'TASK',
+        currentTaskId: 'TASK_ID',
+      })
+    );
+
+    expect(handleServiceUpdate).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        value: 'TASK',
+        currentTaskId: 'TASK_ID',
+      })
+    );
+  });
 });

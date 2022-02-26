@@ -6,6 +6,7 @@ import {
   PomelloEventMap,
   PomelloServiceConfig,
   PomelloState,
+  Timer,
   TimerState,
   TimerType,
 } from './models';
@@ -26,8 +27,11 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
 
   let setIndex = 0;
 
-  function handleTimerEnd(): void {
-    incrementSetIndex();
+  function handleTimerEnd(timer: Timer): void {
+    // Injected timers aren't part of the set, so don't increment the index.
+    if (!timer.isInjected) {
+      incrementSetIndex();
+    }
 
     if (appService.getState().value === AppState.task) {
       appService.setAppState(AppState.taskTimerEndPrompt);
@@ -44,6 +48,14 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
 
   function handleServiceUpdate(): void {
     batchedEmit('update', getState());
+  }
+
+  function decrementSetIndex(): void {
+    setIndex -= 1;
+
+    if (setIndex < 0) {
+      setIndex = settings.set.length - 1;
+    }
   }
 
   function incrementSetIndex(): void {
@@ -101,6 +113,28 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
     transitionPomodoroState();
 
     startTimer();
+  }
+
+  function getState(): PomelloState {
+    const appState = appService.getState();
+    const timerState = timerService.getState();
+
+    const timer = timerState.context.timer
+      ? {
+          isActive: timerState.value === TimerState.active,
+          isInjected: timerState.context.timer.isInjected,
+          isPaused: timerState.value === TimerState.paused,
+          time: timerState.context.timer.time,
+          totalTime: timerState.context.timer.totalTime,
+          type: timerState.context.timer.type,
+        }
+      : null;
+
+    return {
+      value: appState.value,
+      currentTaskId: appState.context.currentTaskId,
+      timer,
+    };
   }
 
   function pauseTimer(): void {
@@ -163,26 +197,30 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
     transitionPomodoroState();
   }
 
-  function getState(): PomelloState {
-    const appState = appService.getState();
-    const timerState = timerService.getState();
+  function voidTask(): void {
+    emit('taskVoid', getState());
 
-    const timer = timerState.context.timer
-      ? {
-          isActive: timerState.value === TimerState.active,
-          isInjected: timerState.context.timer.isInjected,
-          isPaused: timerState.value === TimerState.paused,
-          time: timerState.context.timer.time,
-          totalTime: timerState.context.timer.totalTime,
-          type: timerState.context.timer.type,
-        }
-      : null;
+    if (timerService.getState().value === TimerState.active) {
+      timerService.destroyTimer();
+    }
 
-    return {
-      value: appState.value,
-      currentTaskId: appState.context.currentTaskId,
-      timer,
-    };
+    if (appService.getState().value === AppState.taskTimerEndPrompt) {
+      decrementSetIndex();
+    }
+
+    appService.voidTask();
+  }
+
+  function voidPromptHandled(): void {
+    appService.setAppState(AppState.shortBreak);
+
+    timerService.createTimer({
+      isInjected: true,
+      time: settings.shortBreakTime,
+      type: TimerType.shortBreak,
+    });
+
+    startTimer();
   }
 
   return {
@@ -199,6 +237,8 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
     startTimer,
     switchTask,
     taskCompleteHandled,
+    voidTask,
+    voidPromptHandled,
   };
 };
 
