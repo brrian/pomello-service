@@ -10,28 +10,16 @@ describe('Pomello Service', () => {
   it('should transition to the select task state', () => {
     const { service } = mountPomelloService({ initialize: false });
 
-    const handleAppInitialize = jest.fn();
-    service.on('appInitialize', handleAppInitialize);
-
     service.setReady();
 
     expect(service.getState().value).toEqual('SELECT_TASK');
-
-    expect(handleAppInitialize).toHaveBeenCalledTimes(1);
-    expect(handleAppInitialize).toHaveBeenCalledWith({
-      value: 'SELECT_TASK',
-      currentTaskId: null,
-      timer: null,
-    });
   });
 
   it('should transition to the task state', () => {
     const { attachUpdateHandler, service, waitForBatchedEvents } = mountPomelloService();
 
     const handleServiceUpdate = attachUpdateHandler();
-    const handleTaskSelect = jest.fn();
 
-    service.on('taskSelect', handleTaskSelect);
     service.selectTask('TASK_ID');
     waitForBatchedEvents();
 
@@ -41,13 +29,6 @@ describe('Pomello Service', () => {
     });
 
     expect(handleServiceUpdate).toHaveBeenCalledWith(
-      expect.objectContaining({
-        value: 'TASK',
-        currentTaskId: 'TASK_ID',
-      })
-    );
-
-    expect(handleTaskSelect).toHaveBeenCalledWith(
       expect.objectContaining({
         value: 'TASK',
         currentTaskId: 'TASK_ID',
@@ -281,8 +262,6 @@ describe('Pomello Service', () => {
       });
 
     const handleServiceUpdate = attachUpdateHandler();
-    const handleTaskVoid = jest.fn();
-    service.on('taskVoid', handleTaskVoid);
 
     service.selectTask('TASK_ID');
     service.startTimer();
@@ -303,13 +282,6 @@ describe('Pomello Service', () => {
         currentTaskId: 'TASK_ID',
       })
     );
-
-    expect(handleTaskVoid).toHaveBeenCalledTimes(1);
-    expect(handleTaskVoid).toHaveBeenCalledWith({
-      value: 'TASK_TIMER_END_PROMPT',
-      currentTaskId: 'TASK_ID',
-      timer: null,
-    });
   });
 
   it('should transition to a short break after handling a void prompt', () => {
