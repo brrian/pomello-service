@@ -1,5 +1,6 @@
 import createAppService from './createAppService';
 import createEventEmitter from './createEventEmitter';
+import createOvertimeService from './createOvertimeService';
 import createTimerService from './createTimerService';
 import {
   AppState,
@@ -26,6 +27,11 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
     ticker: createTicker(),
   });
 
+  const overtimeService = createOvertimeService({
+    onStateChange: handleServiceUpdate,
+    ticker: createTicker(),
+  });
+
   let setIndex = 0;
 
   function handleTimerEnd(timer: Timer): void {
@@ -44,6 +50,11 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
     } else {
       transitionPomodoroState();
     }
+
+    overtimeService.startOvertimeCountdown({
+      delay: settings.overtimeDelay,
+      type: timer.type,
+    });
   }
 
   function handleTimerTick(): void {
@@ -138,6 +149,7 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
   function getState(): PomelloState {
     const appState = appService.getState();
     const timerState = timerService.getState();
+    const overtime = overtimeService.getState();
 
     const timer = timerState.context.timer
       ? {
@@ -154,6 +166,7 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
       value: appState.value,
       currentTaskId: appState.context.currentTaskId,
       timer,
+      overtime: overtime.context.overtime,
     };
   }
 
