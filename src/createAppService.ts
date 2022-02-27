@@ -1,7 +1,7 @@
 import createState from './createState';
 import { AppContext, AppState, CreateAppServiceOptions } from './models';
 
-export default function createAppService({ onStateChange }: CreateAppServiceOptions) {
+const createAppService = ({ onStateChange }: CreateAppServiceOptions) => {
   const { getState, setState } = createState<AppState, AppContext>({
     initialState: AppState.initializing,
     context: {
@@ -10,35 +10,35 @@ export default function createAppService({ onStateChange }: CreateAppServiceOpti
     onStateChange,
   });
 
-  function completeTask(): void {
+  const completeTask = (): void => {
     setState(AppState.taskCompletePrompt);
-  }
+  };
 
-  function selectTask(taskId: string): void {
+  const selectTask = (taskId: string): void => {
     setState(AppState.task, {
       currentTaskId: taskId,
     });
-  }
+  };
 
-  function setAppState(target: AppState): void {
+  const setAppState = (target: AppState): void => {
     setState(target);
-  }
+  };
 
-  function switchTask(): void {
+  const switchTask = (): void => {
     setState(AppState.selectTask, {
       currentTaskId: null,
     });
-  }
+  };
 
-  function unsetCurrentTask(): void {
+  const unsetCurrentTask = (): void => {
     setState(null, {
       currentTaskId: null,
     });
-  }
+  };
 
-  function voidTask(): void {
+  const voidTask = (): void => {
     setState(AppState.taskVoidPrompt);
-  }
+  };
 
   return {
     completeTask,
@@ -49,4 +49,6 @@ export default function createAppService({ onStateChange }: CreateAppServiceOpti
     unsetCurrentTask,
     voidTask,
   };
-}
+};
+
+export default createAppService;

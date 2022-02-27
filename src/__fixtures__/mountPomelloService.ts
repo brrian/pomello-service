@@ -15,7 +15,7 @@ const defaultSettings: PomelloSettings = {
   taskTime: 30,
 };
 
-function createTicker(): Ticker {
+const createTicker = (): Ticker => {
   let tickId: NodeJS.Timeout | undefined;
   let waitId: NodeJS.Timeout | undefined;
 
@@ -31,20 +31,20 @@ function createTicker(): Ticker {
     wait(callback, delay) {
       waitId = setTimeout(callback, delay * 1000);
 
-      return function () {
+      return () => {
         if (waitId) {
           clearTimeout(waitId);
         }
       };
     },
   };
-}
+};
 
-export default function mountPomelloService({
+const mountPomelloService = ({
   onServiceUpdate = jest.fn(),
   settings = {},
   initialize = true,
-}: MountPomelloServiceOptions = {}) {
+}: MountPomelloServiceOptions = {}) => {
   const service = createPomelloService({
     createTicker,
     settings: {
@@ -57,7 +57,7 @@ export default function mountPomelloService({
     service.setReady();
   }
 
-  function advanceTimer(seconds?: number) {
+  const advanceTimer = (seconds?: number) => {
     if (!seconds) {
       // Advance the timer one at a time and explicitly check the timer state.
       // Otherwise, calling jest.runAllTimers will also run the overtime timers.
@@ -69,17 +69,17 @@ export default function mountPomelloService({
     } else {
       jest.advanceTimersByTime(seconds * 1000);
     }
-  }
+  };
 
-  function attachUpdateHandler() {
+  const attachUpdateHandler = () => {
     service.on('update', onServiceUpdate);
 
     return onServiceUpdate;
-  }
+  };
 
-  function waitForBatchedEvents() {
+  const waitForBatchedEvents = () => {
     jest.advanceTimersByTime(1);
-  }
+  };
 
   return {
     advanceTimer,
@@ -87,4 +87,6 @@ export default function mountPomelloService({
     service,
     waitForBatchedEvents,
   };
-}
+};
+
+export default mountPomelloService;

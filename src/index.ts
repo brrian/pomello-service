@@ -16,25 +16,7 @@ import {
 const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) => {
   const { batchedEmit, emit, on, off } = createEventEmitter<PomelloEventMap>();
 
-  const appService = createAppService({
-    onStateChange: handleServiceUpdate,
-  });
-
-  const timerService = createTimerService({
-    onStateChange: handleServiceUpdate,
-    onTimerEnd: handleTimerEnd,
-    onTimerTick: handleTimerTick,
-    ticker: createTicker(),
-  });
-
-  const overtimeService = createOvertimeService({
-    onStateChange: handleServiceUpdate,
-    ticker: createTicker(),
-  });
-
-  let setIndex = 0;
-
-  function handleTimerEnd(timer: Timer): void {
+  const handleTimerEnd = (timer: Timer): void => {
     // To avoid showning the time of 0, handleTimerEnd gets fired when the timer
     // gets ticked at 1. The actual time is 0 but it's not shown for aesthetic
     // reasons. So we need to hardcode the time to 0 here.
@@ -55,17 +37,35 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
       delay: settings.overtimeDelay,
       type: timer.type,
     });
-  }
+  };
 
-  function handleTimerTick(): void {
+  const handleTimerTick = (): void => {
     emit('timerTick', createPomelloEvent());
-  }
+  };
 
-  function handleServiceUpdate(): void {
+  const handleServiceUpdate = (): void => {
     batchedEmit('update', getState());
-  }
+  };
 
-  function createPomelloEvent(timerOverride?: Timer): PomelloEvent {
+  const appService = createAppService({
+    onStateChange: handleServiceUpdate,
+  });
+
+  const timerService = createTimerService({
+    onStateChange: handleServiceUpdate,
+    onTimerEnd: handleTimerEnd,
+    onTimerTick: handleTimerTick,
+    ticker: createTicker(),
+  });
+
+  const overtimeService = createOvertimeService({
+    onStateChange: handleServiceUpdate,
+    ticker: createTicker(),
+  });
+
+  let setIndex = 0;
+
+  const createPomelloEvent = (timerOverride?: Timer): PomelloEvent => {
     const timer = timerOverride ? timerOverride : timerService.getState().context.timer;
 
     return {
@@ -79,25 +79,25 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
         : null,
       timestamp: Date.now(),
     };
-  }
+  };
 
-  function decrementSetIndex(): void {
+  const decrementSetIndex = (): void => {
     setIndex -= 1;
 
     if (setIndex < 0) {
       setIndex = settings.set.length - 1;
     }
-  }
+  };
 
-  function incrementSetIndex(): void {
+  const incrementSetIndex = (): void => {
     setIndex += 1;
 
     if (setIndex >= settings.set.length) {
       setIndex = 0;
     }
-  }
+  };
 
-  function transitionPomodoroState(): void {
+  const transitionPomodoroState = (): void => {
     const set = settings.set[setIndex];
 
     if (set === 'task') {
@@ -134,19 +134,19 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
     }
 
     throw new Error(`Unknown set item: "${set}"`);
-  }
+  };
 
-  function completeTask(): void {
+  const completeTask = (): void => {
     appService.completeTask();
-  }
+  };
 
-  function continueTask(): void {
+  const continueTask = (): void => {
     transitionPomodoroState();
 
     startTimer();
-  }
+  };
 
-  function getState(): PomelloState {
+  const getState = (): PomelloState => {
     const appState = appService.getState();
     const timerState = timerService.getState();
     const overtime = overtimeService.getState();
@@ -168,37 +168,37 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
       timer,
       overtime: overtime.context.overtime,
     };
-  }
+  };
 
-  function pauseTimer(): void {
+  const pauseTimer = (): void => {
     timerService.pauseTimer();
 
     emit('timerPause', createPomelloEvent());
-  }
+  };
 
-  function selectNewTask(): void {
+  const selectNewTask = (): void => {
     appService.unsetCurrentTask();
 
     transitionPomodoroState();
 
     startTimer();
-  }
+  };
 
-  function selectTask(taskId: string): void {
+  const selectTask = (taskId: string): void => {
     appService.selectTask(taskId);
 
     transitionPomodoroState();
 
     emit('taskSelect', createPomelloEvent());
-  }
+  };
 
-  function setReady(): void {
+  const setReady = (): void => {
     transitionPomodoroState();
 
     emit('appInitialize', createPomelloEvent());
-  }
+  };
 
-  function skipTimer(): void {
+  const skipTimer = (): void => {
     emit('timerSkip', createPomelloEvent());
 
     timerService.destroyTimer();
@@ -206,9 +206,9 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
     incrementSetIndex();
 
     transitionPomodoroState();
-  }
+  };
 
-  function startTimer(): void {
+  const startTimer = (): void => {
     const wasPaused = timerService.getState().value === TimerState.paused;
 
     timerService.startTimer();
@@ -218,19 +218,19 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
     } else {
       emit('timerStart', createPomelloEvent());
     }
-  }
+  };
 
-  function switchTask(): void {
+  const switchTask = (): void => {
     appService.switchTask();
-  }
+  };
 
-  function taskCompleteHandled(): void {
+  const taskCompleteHandled = (): void => {
     appService.unsetCurrentTask();
 
     transitionPomodoroState();
-  }
+  };
 
-  function voidTask(): void {
+  const voidTask = (): void => {
     emit('taskVoid', createPomelloEvent());
 
     if (timerService.getState().value === TimerState.active) {
@@ -242,9 +242,9 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
     }
 
     appService.voidTask();
-  }
+  };
 
-  function voidPromptHandled(): void {
+  const voidPromptHandled = (): void => {
     appService.setAppState(AppState.shortBreak);
 
     timerService.createTimer({
@@ -254,7 +254,7 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
     });
 
     startTimer();
-  }
+  };
 
   return {
     completeTask,
