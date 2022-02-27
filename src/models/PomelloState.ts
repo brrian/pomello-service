@@ -1,3 +1,5 @@
+import { TimerType } from './TimerType';
+
 export interface PomelloState {
   value:
     | 'INITIALIZING'
@@ -10,6 +12,7 @@ export interface PomelloState {
     | 'LONG_BREAK';
   currentTaskId: string | null;
   timer: Timer | null;
+  overtime: Overtime | null;
 }
 
 interface Timer {
@@ -18,4 +21,9 @@ interface Timer {
   isPaused: boolean;
   time: number;
   totalTime: number;
+}
+
+interface Overtime {
+  time: number;
+  type: TimerType;
 }
