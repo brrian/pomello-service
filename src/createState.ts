@@ -6,28 +6,30 @@ interface CreateStateOptions<TStateValue extends string, TContext extends object
   onStateChange: (state: State<TStateValue, TContext>) => void;
 }
 
-export default function createState<TStateValue extends string, TContext extends object = never>({
+const createState = <TStateValue extends string, TContext extends object = never>({
   initialState,
   context,
   onStateChange,
-}: CreateStateOptions<TStateValue, TContext>) {
+}: CreateStateOptions<TStateValue, TContext>) => {
   let state = {
     value: initialState,
     context: context,
   };
 
-  function getState() {
+  const getState = () => {
     return state;
-  }
+  };
 
-  function setState(newStateValue: TStateValue | null, context?: TContext) {
+  const setState = (newStateValue: TStateValue | null, context?: TContext) => {
     state = {
       value: newStateValue ?? state.value,
       context: context ?? state.context,
     };
 
     onStateChange(state);
-  }
+  };
 
   return { getState, setState };
-}
+};
+
+export default createState;

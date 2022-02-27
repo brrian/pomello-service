@@ -15,15 +15,15 @@ const createTimerService = ({
     onStateChange,
   });
 
-  function startTicker(): void {
+  const startTicker = (): void => {
     ticker.start(() => {
       tickTimer();
 
       onTimerTick();
     });
-  }
+  };
 
-  function tickTimer(): void {
+  const tickTimer = (): void => {
     const { timer } = getState().context;
 
     if (timer) {
@@ -42,9 +42,9 @@ const createTimerService = ({
         });
       }
     }
-  }
+  };
 
-  function createTimer({ isInjected = false, time, type }: CreateTimerOptions): void {
+  const createTimer = ({ isInjected = false, time, type }: CreateTimerOptions): void => {
     setState(TimerState.ready, {
       timer: {
         isInjected,
@@ -53,25 +53,25 @@ const createTimerService = ({
         type,
       },
     });
-  }
+  };
 
-  function destroyTimer(): void {
+  const destroyTimer = (): void => {
     setState(TimerState.idle, { timer: null });
 
     ticker.stop();
-  }
+  };
 
-  function pauseTimer(): void {
+  const pauseTimer = (): void => {
     setState(TimerState.paused);
 
     ticker.stop();
-  }
+  };
 
-  function startTimer(): void {
+  const startTimer = (): void => {
     setState(TimerState.active);
 
     startTicker();
-  }
+  };
 
   return {
     createTimer,

@@ -15,8 +15,8 @@ const createOvertimeService = ({ onStateChange, ticker }: CreateOvertimeServiceO
     onStateChange,
   });
 
-  function startOvertimeCountdown({ delay, type }: StartOvertimeCountdownOptions): void {
-    ticker.wait(function () {
+  const startOvertimeCountdown = ({ delay, type }: StartOvertimeCountdownOptions): void => {
+    ticker.wait(() => {
       setState(OvertimeState.active, {
         overtime: {
           time: delay,
@@ -24,7 +24,7 @@ const createOvertimeService = ({ onStateChange, ticker }: CreateOvertimeServiceO
         },
       });
     }, delay);
-  }
+  };
 
   return {
     startOvertimeCountdown,
