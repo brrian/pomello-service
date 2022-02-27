@@ -29,6 +29,11 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
   let setIndex = 0;
 
   function handleTimerEnd(timer: Timer): void {
+    // To avoid showning the time of 0, handleTimerEnd gets fired when the timer
+    // gets ticked at 1. The actual time is 0 but it's not shown for aesthetic
+    // reasons. So we need to hardcode the time to 0 here.
+    emit('timerEnd', createPomelloEvent({ ...timer, time: 0 }));
+
     // Injected timers aren't part of the set, so don't increment the index.
     if (!timer.isInjected) {
       incrementSetIndex();
@@ -39,20 +44,18 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
     } else {
       transitionPomodoroState();
     }
-
-    emit('timerEnd', getState());
   }
 
   function handleTimerTick(): void {
-    emit('timerTick', getState());
+    emit('timerTick', createPomelloEvent());
   }
 
   function handleServiceUpdate(): void {
     batchedEmit('update', getState());
   }
 
-  function createPomelloEvent(): PomelloEvent {
-    const { timer } = timerService.getState().context;
+  function createPomelloEvent(timerOverride?: Timer): PomelloEvent {
+    const timer = timerOverride ? timerOverride : timerService.getState().context.timer;
 
     return {
       taskId: appService.getState().context.currentTaskId,
@@ -157,7 +160,7 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
   function pauseTimer(): void {
     timerService.pauseTimer();
 
-    emit('timerPause', getState());
+    emit('timerPause', createPomelloEvent());
   }
 
   function selectNewTask(): void {
@@ -183,7 +186,7 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
   }
 
   function skipTimer(): void {
-    emit('timerSkip', getState());
+    emit('timerSkip', createPomelloEvent());
 
     timerService.destroyTimer();
 
@@ -198,9 +201,9 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
     timerService.startTimer();
 
     if (wasPaused) {
-      emit('timerResume', getState());
+      emit('timerResume', createPomelloEvent());
     } else {
-      emit('timerStart', getState());
+      emit('timerStart', createPomelloEvent());
     }
   }
 

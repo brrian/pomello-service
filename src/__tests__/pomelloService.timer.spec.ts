@@ -40,9 +40,7 @@ describe('Pomello Service - Timers', () => {
     const { attachUpdateHandler, service, waitForBatchedEvents } = mountPomelloService();
 
     const handleServiceUpdate = attachUpdateHandler();
-    const handleTimerStart = jest.fn();
 
-    service.on('timerStart', handleTimerStart);
     service.selectTask('TASK_TIMER_ID');
     service.startTimer();
     waitForBatchedEvents();
@@ -68,19 +66,6 @@ describe('Pomello Service - Timers', () => {
         type: TimerType.task,
       },
     });
-
-    expect(handleTimerStart).toHaveBeenCalledWith({
-      value: 'TASK',
-      currentTaskId: 'TASK_TIMER_ID',
-      timer: {
-        isActive: true,
-        isInjected: false,
-        isPaused: false,
-        time: 30,
-        totalTime: 30,
-        type: TimerType.task,
-      },
-    });
   });
 
   it('should tick the timer when active', () => {
@@ -91,9 +76,6 @@ describe('Pomello Service - Timers', () => {
         },
       });
 
-    const handleTimerTick = jest.fn();
-
-    service.on('timerTick', handleTimerTick);
     service.selectTask('TASK_TIMER_ID');
     service.startTimer();
     waitForBatchedEvents();
@@ -124,20 +106,6 @@ describe('Pomello Service - Timers', () => {
         type: TimerType.task,
       },
     });
-
-    expect(handleTimerTick).toHaveBeenCalledTimes(10);
-    expect(handleTimerTick).toHaveBeenLastCalledWith({
-      value: 'TASK',
-      currentTaskId: 'TASK_TIMER_ID',
-      timer: {
-        isActive: true,
-        isInjected: false,
-        isPaused: false,
-        time: 10,
-        totalTime: 20,
-        type: TimerType.task,
-      },
-    });
   });
 
   it('should pause an active timer', () => {
@@ -148,12 +116,7 @@ describe('Pomello Service - Timers', () => {
         },
       });
 
-    const handleTimerTick = jest.fn();
-    const handleTimerPause = jest.fn();
     const handleServiceUpdate = attachUpdateHandler();
-
-    service.on('timerPause', handleTimerPause);
-    service.on('timerTick', handleTimerTick);
 
     service.selectTask('TASK_TIMER_ID');
     service.startTimer();
@@ -184,22 +147,6 @@ describe('Pomello Service - Timers', () => {
         type: TimerType.task,
       },
     });
-
-    expect(handleTimerTick).toHaveBeenCalledTimes(10);
-
-    expect(handleTimerPause).toHaveBeenCalledTimes(1);
-    expect(handleTimerPause).toHaveBeenLastCalledWith({
-      value: 'TASK',
-      currentTaskId: 'TASK_TIMER_ID',
-      timer: {
-        isActive: false,
-        isInjected: false,
-        isPaused: true,
-        time: 10,
-        totalTime: 20,
-        type: TimerType.task,
-      },
-    });
   });
 
   it('should resume a paused timer', () => {
@@ -210,12 +157,7 @@ describe('Pomello Service - Timers', () => {
         },
       });
 
-    const handleTimerTick = jest.fn();
-    const handleTimerResume = jest.fn();
     const handleServiceUpdate = attachUpdateHandler();
-
-    service.on('timerTick', handleTimerTick);
-    service.on('timerResume', handleTimerResume);
 
     service.selectTask('TASK_TIMER_ID');
     service.startTimer();
@@ -248,22 +190,6 @@ describe('Pomello Service - Timers', () => {
         type: TimerType.task,
       },
     });
-
-    expect(handleTimerTick).toHaveBeenCalledTimes(15);
-
-    expect(handleTimerResume).toHaveBeenCalledTimes(1);
-    expect(handleTimerResume).toHaveBeenLastCalledWith({
-      value: 'TASK',
-      currentTaskId: 'TASK_TIMER_ID',
-      timer: {
-        isActive: true,
-        isInjected: false,
-        isPaused: false,
-        time: 10,
-        totalTime: 20,
-        type: TimerType.task,
-      },
-    });
   });
 
   it('should automatically start a timer when continuing a task', async () => {
@@ -274,13 +200,11 @@ describe('Pomello Service - Timers', () => {
         },
       });
 
-    const handleTimerStart = jest.fn();
     const handleServiceUpdate = attachUpdateHandler();
 
     service.selectTask('TASK_TIMER_ID');
     service.startTimer();
     advanceTimer();
-    service.on('timerStart', handleTimerStart);
     service.continueTask();
     waitForBatchedEvents();
 
@@ -305,20 +229,6 @@ describe('Pomello Service - Timers', () => {
         type: TimerType.shortBreak,
       },
     });
-
-    expect(handleTimerStart).toHaveBeenCalledTimes(1);
-    expect(handleTimerStart).toHaveBeenLastCalledWith({
-      value: 'SHORT_BREAK',
-      currentTaskId: 'TASK_TIMER_ID',
-      timer: {
-        isActive: true,
-        isInjected: false,
-        isPaused: false,
-        time: 20,
-        totalTime: 20,
-        type: TimerType.shortBreak,
-      },
-    });
   });
 
   it('should use the existing task timer when switching tasks', () => {
@@ -328,9 +238,6 @@ describe('Pomello Service - Timers', () => {
         taskTime: 30,
       },
     });
-
-    const handleTimerStart = jest.fn();
-    service.on('timerStart', handleTimerStart);
 
     service.selectTask('TASK_TIMER_ID');
     service.startTimer();
@@ -347,8 +254,6 @@ describe('Pomello Service - Timers', () => {
       totalTime: 30,
       type: TimerType.task,
     });
-
-    expect(handleTimerStart).toHaveBeenCalledTimes(1);
   });
 
   it('should destroy the timer when skipped', () => {
@@ -359,9 +264,6 @@ describe('Pomello Service - Timers', () => {
         shortBreakTime: 10,
       },
     });
-
-    const handleTimerSkip = jest.fn();
-    service.on('timerSkip', handleTimerSkip);
 
     service.startTimer();
     advanceTimer(5);
@@ -374,20 +276,6 @@ describe('Pomello Service - Timers', () => {
       time: 15,
       totalTime: 15,
       type: TimerType.longBreak,
-    });
-
-    expect(handleTimerSkip).toHaveBeenCalledTimes(1);
-    expect(handleTimerSkip).toHaveBeenLastCalledWith({
-      value: 'SHORT_BREAK',
-      currentTaskId: null,
-      timer: {
-        isActive: true,
-        isInjected: false,
-        isPaused: false,
-        time: 5,
-        totalTime: 10,
-        type: TimerType.shortBreak,
-      },
     });
   });
 
@@ -450,9 +338,6 @@ describe('Pomello Service - Timers', () => {
       },
     });
 
-    const handleTimerStart = jest.fn();
-    service.on('timerStart', handleTimerStart);
-
     service.selectTask('TASK_ID');
     service.startTimer();
     advanceTimer();
@@ -466,20 +351,6 @@ describe('Pomello Service - Timers', () => {
       time: 10,
       totalTime: 10,
       type: TimerType.shortBreak,
-    });
-
-    expect(handleTimerStart).toHaveBeenCalledTimes(2);
-    expect(handleTimerStart).toHaveBeenLastCalledWith({
-      value: 'SHORT_BREAK',
-      currentTaskId: 'TASK_ID',
-      timer: {
-        isActive: true,
-        isInjected: true,
-        isPaused: false,
-        time: 10,
-        totalTime: 10,
-        type: TimerType.shortBreak,
-      },
     });
   });
 });
