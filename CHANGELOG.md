@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 0.0.19 (2022-02-27)
+
+### Features
+
+- update timer events payload ([#18](https://github.com/brrian/pomello-service/issues/18)) ([69432d7](https://github.com/brrian/pomello-service/commit/69432d7666bf9fde0411f75be3ca5651e3c27836))
+
 ### 0.0.18 (2022-02-26)
 
 ### Features
