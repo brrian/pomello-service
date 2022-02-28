@@ -23,6 +23,8 @@ const createOvertimeService = ({ onStateChange, ticker }: CreateOvertimeServiceO
       setState(OvertimeState.idle, {
         overtime: null,
       });
+
+      ticker.stop();
     } else if (cancelOvertimeCountdown) {
       cancelOvertimeCountdown();
       cancelOvertimeCountdown = null;
@@ -37,7 +39,22 @@ const createOvertimeService = ({ onStateChange, ticker }: CreateOvertimeServiceO
           type,
         },
       });
+
+      ticker.start(tickTimer);
     }, delay);
+  };
+
+  const tickTimer = (): void => {
+    const { overtime } = getState().context;
+
+    if (overtime) {
+      setState(null, {
+        overtime: {
+          ...overtime,
+          time: overtime.time + 1,
+        },
+      });
+    }
   };
 
   return {
