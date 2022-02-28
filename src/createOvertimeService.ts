@@ -1,5 +1,6 @@
 import createState from './createState';
 import {
+  CancelWait,
   CreateOvertimeServiceOptions,
   OvertimeContext,
   OvertimeState,
@@ -15,8 +16,21 @@ const createOvertimeService = ({ onStateChange, ticker }: CreateOvertimeServiceO
     onStateChange,
   });
 
+  let cancelOvertimeCountdown: CancelWait | null = null;
+
+  const endOvertime = (): void => {
+    if (getState().value === OvertimeState.active) {
+      setState(OvertimeState.idle, {
+        overtime: null,
+      });
+    } else if (cancelOvertimeCountdown) {
+      cancelOvertimeCountdown();
+      cancelOvertimeCountdown = null;
+    }
+  };
+
   const startOvertimeCountdown = ({ delay, type }: StartOvertimeCountdownOptions): void => {
-    ticker.wait(() => {
+    cancelOvertimeCountdown = ticker.wait(() => {
       setState(OvertimeState.active, {
         overtime: {
           time: delay,
@@ -27,6 +41,7 @@ const createOvertimeService = ({ onStateChange, ticker }: CreateOvertimeServiceO
   };
 
   return {
+    endOvertime,
     startOvertimeCountdown,
     getState,
   };

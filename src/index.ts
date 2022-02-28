@@ -209,15 +209,16 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
   };
 
   const startTimer = (): void => {
+    overtimeService.endOvertime();
+
     const wasPaused = timerService.getState().value === TimerState.paused;
-
-    timerService.startTimer();
-
     if (wasPaused) {
       emit('timerResume', createPomelloEvent());
     } else {
       emit('timerStart', createPomelloEvent());
     }
+
+    timerService.startTimer();
   };
 
   const switchTask = (): void => {
