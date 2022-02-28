@@ -19,6 +19,7 @@ describe('Pomello Service - Events', () => {
       expect.objectContaining({
         taskId: null,
         timer: null,
+        overtime: null,
         timestamp: expect.any(Number),
       })
     );
@@ -46,6 +47,7 @@ describe('Pomello Service - Events', () => {
           totalTime: 20,
           type: 'TASK',
         },
+        overtime: null,
         timestamp: expect.any(Number),
       })
     );
@@ -76,6 +78,7 @@ describe('Pomello Service - Events', () => {
           totalTime: 20,
           type: 'TASK',
         },
+        overtime: null,
         timestamp: expect.any(Number),
       })
     );
@@ -106,6 +109,7 @@ describe('Pomello Service - Events', () => {
           totalTime: 20,
           type: 'TASK',
         },
+        overtime: null,
         timestamp: expect.any(Number),
       })
     );
@@ -131,6 +135,7 @@ describe('Pomello Service - Events', () => {
       expect.objectContaining({
         taskId: 'TASK_ID',
         timer: null,
+        overtime: null,
         timestamp: expect.any(Number),
       })
     );
@@ -168,6 +173,7 @@ describe('Pomello Service - Events', () => {
           totalTime: 20,
           type: 'TASK',
         },
+        overtime: null,
         timestamp: expect.any(Number),
       })
     );
@@ -181,6 +187,7 @@ describe('Pomello Service - Events', () => {
           totalTime: 8,
           type: 'SHORT_BREAK',
         },
+        overtime: null,
         timestamp: expect.any(Number),
       })
     );
@@ -194,6 +201,7 @@ describe('Pomello Service - Events', () => {
           totalTime: 18,
           type: 'LONG_BREAK',
         },
+        overtime: null,
         timestamp: expect.any(Number),
       })
     );
@@ -224,6 +232,7 @@ describe('Pomello Service - Events', () => {
           totalTime: 20,
           type: 'TASK',
         },
+        overtime: null,
         timestamp: expect.any(Number),
       })
     );
@@ -255,6 +264,7 @@ describe('Pomello Service - Events', () => {
           totalTime: 20,
           type: 'TASK',
         },
+        overtime: null,
         timestamp: expect.any(Number),
       })
     );
@@ -284,6 +294,7 @@ describe('Pomello Service - Events', () => {
           totalTime: 10,
           type: 'SHORT_BREAK',
         },
+        overtime: null,
         timestamp: expect.any(Number),
       })
     );
@@ -311,6 +322,7 @@ describe('Pomello Service - Events', () => {
           totalTime: 20,
           type: 'TASK',
         },
+        overtime: null,
         timestamp: expect.any(Number),
       })
     );
@@ -344,6 +356,7 @@ describe('Pomello Service - Events', () => {
           totalTime: 30,
           type: 'TASK',
         },
+        overtime: null,
         timestamp: expect.any(Number),
       })
     );
@@ -357,6 +370,7 @@ describe('Pomello Service - Events', () => {
           totalTime: 20,
           type: 'SHORT_BREAK',
         },
+        overtime: null,
         timestamp: expect.any(Number),
       })
     );
@@ -412,6 +426,7 @@ describe('Pomello Service - Events', () => {
           totalTime: 20,
           type: 'TASK',
         },
+        overtime: null,
         timestamp: expect.any(Number),
       })
     );
@@ -425,6 +440,7 @@ describe('Pomello Service - Events', () => {
           totalTime: 10,
           type: 'SHORT_BREAK',
         },
+        overtime: null,
         timestamp: expect.any(Number),
       })
     );
@@ -454,6 +470,7 @@ describe('Pomello Service - Events', () => {
           totalTime: 20,
           type: 'TASK',
         },
+        overtime: null,
         timestamp: expect.any(Number),
       })
     );
@@ -477,5 +494,92 @@ describe('Pomello Service - Events', () => {
     advanceTimer(30);
 
     expect(handleTimerTick).toHaveBeenCalledTimes(10);
+  });
+
+  it('should log the overtimeStart event when overtime starts', () => {
+    const { advanceTimer, service } = mountPomelloService({
+      settings: {
+        set: ['task'],
+        overtimeDelay: 10,
+      },
+    });
+
+    const handleOvertimeStart = jest.fn();
+
+    service.on('overtimeStart', handleOvertimeStart);
+    service.selectTask('TASK_TIMER_ID');
+    service.startTimer();
+    advanceTimer();
+    advanceTimer(10);
+
+    expect(handleOvertimeStart).toHaveBeenCalledWith(
+      expect.objectContaining({
+        taskId: 'TASK_TIMER_ID',
+        timer: null,
+        overtime: {
+          time: 10,
+          type: 'TASK',
+        },
+        timestamp: expect.any(Number),
+      })
+    );
+  });
+
+  it('should log the overtimeTick event when the overtime timer ticks', () => {
+    const { advanceTimer, service } = mountPomelloService({
+      settings: {
+        set: ['longBreak', 'task'],
+        overtimeDelay: 10,
+      },
+    });
+
+    const handleOvertimeTick = jest.fn();
+
+    service.on('overtimeTick', handleOvertimeTick);
+    service.startTimer();
+    advanceTimer();
+    advanceTimer(20);
+
+    expect(handleOvertimeTick).toHaveBeenCalledTimes(10);
+    expect(handleOvertimeTick).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        taskId: null,
+        timer: null,
+        overtime: {
+          time: 20,
+          type: 'LONG_BREAK',
+        },
+        timestamp: expect.any(Number),
+      })
+    );
+  });
+
+  it('should log the overtimeEnd event when overtime ends', () => {
+    const { advanceTimer, service } = mountPomelloService({
+      settings: {
+        set: ['shortBreak', 'task'],
+        overtimeDelay: 10,
+      },
+    });
+
+    const handleOvertimeEnd = jest.fn();
+
+    service.on('overtimeEnd', handleOvertimeEnd);
+    service.startTimer();
+    advanceTimer();
+    advanceTimer(20);
+    service.startTimer();
+
+    expect(handleOvertimeEnd).toHaveBeenCalledWith(
+      expect.objectContaining({
+        taskId: null,
+        timer: null,
+        overtime: {
+          time: 20,
+          type: 'SHORT_BREAK',
+        },
+        timestamp: expect.any(Number),
+      })
+    );
   });
 });

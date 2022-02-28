@@ -7,5 +7,9 @@ export interface PomelloEvent {
     totalTime: number;
     type: TimerType;
   } | null;
+  overtime: {
+    time: number;
+    type: TimerType;
+  } | null;
   timestamp: number;
 }
