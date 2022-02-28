@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 0.0.24 (2022-02-28)
+
+### Features
+
+- add overtime tick handling ([#23](https://github.com/brrian/pomello-service/issues/23)) ([ef5ede5](https://github.com/brrian/pomello-service/commit/ef5ede511977476eff8612d15cf44efa363c255b))
+
 ### 0.0.23 (2022-02-28)
 
 ### Features
