@@ -46,6 +46,24 @@ describe('Pomello Service - Overtime', () => {
     expect(service.getState().overtime).toBe(null);
   });
 
+  it('should tick the overtime timer when active', () => {
+    const { advanceTimer, service } = mountPomelloService({
+      settings: {
+        set: ['shortBreak'],
+        overtimeDelay: 10,
+      },
+    });
+
+    service.startTimer();
+    advanceTimer();
+    advanceTimer(20);
+
+    expect(service.getState().overtime).toMatchObject({
+      time: 20,
+      type: 'SHORT_BREAK',
+    });
+  });
+
   it('should end overtime when the next timer starts', () => {
     const { advanceTimer, service } = mountPomelloService({
       settings: {
