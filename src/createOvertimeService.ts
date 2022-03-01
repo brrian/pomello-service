@@ -7,7 +7,12 @@ import {
   StartOvertimeCountdownOptions,
 } from './models';
 
-const createOvertimeService = ({ onStateChange, ticker }: CreateOvertimeServiceOptions) => {
+const createOvertimeService = ({
+  onOvertimeStart,
+  onOvertimeTick,
+  onStateChange,
+  ticker,
+}: CreateOvertimeServiceOptions) => {
   const { getState, setState } = createState<OvertimeState, OvertimeContext>({
     initialState: OvertimeState.idle,
     context: {
@@ -41,6 +46,8 @@ const createOvertimeService = ({ onStateChange, ticker }: CreateOvertimeServiceO
       });
 
       ticker.start(tickTimer);
+
+      onOvertimeStart();
     }, delay);
   };
 
@@ -54,6 +61,8 @@ const createOvertimeService = ({ onStateChange, ticker }: CreateOvertimeServiceO
           time: overtime.time + 1,
         },
       });
+
+      onOvertimeTick();
     }
   };
 

@@ -3,6 +3,9 @@ import { PomelloState } from './PomelloState';
 
 export type PomelloEventMap = {
   appInitialize: PomelloEvent;
+  overtimeEnd: PomelloEvent;
+  overtimeStart: PomelloEvent;
+  overtimeTick: PomelloEvent;
   taskSelect: PomelloEvent;
   taskVoid: PomelloEvent;
   timerEnd: PomelloEvent;

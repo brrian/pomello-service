@@ -4,6 +4,7 @@ import createOvertimeService from './createOvertimeService';
 import createTimerService from './createTimerService';
 import {
   AppState,
+  OvertimeState,
   PomelloEvent,
   PomelloEventMap,
   PomelloServiceConfig,
@@ -15,6 +16,14 @@ import {
 
 const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) => {
   const { batchedEmit, emit, on, off } = createEventEmitter<PomelloEventMap>();
+
+  const handleOvertimeStart = (): void => {
+    emit('overtimeStart', createPomelloEvent());
+  };
+
+  const handleOvertimeTick = (): void => {
+    emit('overtimeTick', createPomelloEvent());
+  };
 
   const handleTimerEnd = (timer: Timer): void => {
     // To avoid showning the time of 0, handleTimerEnd gets fired when the timer
@@ -59,6 +68,8 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
   });
 
   const overtimeService = createOvertimeService({
+    onOvertimeStart: handleOvertimeStart,
+    onOvertimeTick: handleOvertimeTick,
     onStateChange: handleServiceUpdate,
     ticker: createTicker(),
   });
@@ -77,6 +88,7 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
             type: timer.type,
           }
         : null,
+      overtime: overtimeService.getState().context.overtime,
       timestamp: Date.now(),
     };
   };
@@ -209,6 +221,11 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
   };
 
   const startTimer = (): void => {
+    const overtime = overtimeService.getState();
+    if (overtime.value === OvertimeState.active) {
+      emit('overtimeEnd', createPomelloEvent());
+    }
+
     overtimeService.endOvertime();
 
     const wasPaused = timerService.getState().value === TimerState.paused;
