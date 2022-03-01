@@ -1,6 +1,6 @@
 {
   "name": "pomello-service",
-  "version": "0.0.24",
+  "version": "0.0.25",
   "license": "UNLICENSED",
   "main": "dist/pomello-service.cjs.js",
   "module": "dist/pomello-service.esm.js",

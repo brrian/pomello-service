@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 0.0.25 (2022-03-01)
+
+### Features
+
+- add overtime events ([#24](https://github.com/brrian/pomello-service/issues/24)) ([64dbc4b](https://github.com/brrian/pomello-service/commit/64dbc4b81ad416db729ec010fc62373535e75862))
+
 ### 0.0.24 (2022-02-28)
 
 ### Features
