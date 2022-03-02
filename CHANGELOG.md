@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 0.0.26 (2022-03-02)
+
+### Features
+
+- add task start and end events ([#25](https://github.com/brrian/pomello-service/issues/25)) ([e756a31](https://github.com/brrian/pomello-service/commit/e756a310de46899373c73c79ce7de581ee113460))
+
 ### 0.0.25 (2022-03-01)
 
 ### Features
