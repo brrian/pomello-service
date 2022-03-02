@@ -84,6 +84,131 @@ describe('Pomello Service - Events', () => {
     );
   });
 
+  it('should log the taskStart event when the task timer starts', () => {
+    const { service } = mountPomelloService({
+      settings: {
+        set: ['task'],
+        taskTime: 20,
+      },
+    });
+
+    const handleTaskStart = jest.fn();
+    service.on('taskStart', handleTaskStart);
+
+    service.selectTask('TASK_ID');
+    service.startTimer();
+
+    expect(handleTaskStart).toHaveBeenCalledTimes(1);
+    expect(handleTaskStart).toHaveBeenCalledWith(
+      expect.objectContaining({
+        taskId: 'TASK_ID',
+        timer: {
+          time: 20,
+          totalTime: 20,
+          type: 'TASK',
+        },
+        overtime: null,
+        timestamp: expect.any(Number),
+      })
+    );
+  });
+
+  it('should log the taskStart event after switching tasks', () => {
+    const { advanceTimer, service } = mountPomelloService({
+      settings: {
+        set: ['task'],
+        taskTime: 20,
+      },
+    });
+
+    const handleTaskStart = jest.fn();
+    service.on('taskStart', handleTaskStart);
+
+    service.selectTask('TASK_ID');
+    service.startTimer();
+    advanceTimer(10);
+    service.switchTask();
+    advanceTimer(1);
+    service.selectTask('TASK_ID_2');
+
+    expect(handleTaskStart).toHaveBeenCalledTimes(2);
+    expect(handleTaskStart).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        taskId: 'TASK_ID_2',
+        timer: {
+          time: 9,
+          totalTime: 20,
+          type: 'TASK',
+        },
+        overtime: null,
+        timestamp: expect.any(Number),
+      })
+    );
+  });
+
+  it('should log the taskEnd event whene the task timer ends', () => {
+    const { advanceTimer, service } = mountPomelloService({
+      settings: {
+        set: ['task'],
+        taskTime: 20,
+      },
+    });
+
+    const handleTaskEnd = jest.fn();
+    service.on('taskEnd', handleTaskEnd);
+
+    service.selectTask('TASK_ID');
+    service.startTimer();
+    advanceTimer();
+
+    expect(handleTaskEnd).toHaveBeenCalledTimes(1);
+    expect(handleTaskEnd).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        taskId: 'TASK_ID',
+        timer: {
+          time: 0,
+          totalTime: 20,
+          type: 'TASK',
+        },
+        overtime: null,
+        timestamp: expect.any(Number),
+      })
+    );
+  });
+
+  it('should log the taskEnd event when switching tasks', () => {
+    const { advanceTimer, service } = mountPomelloService({
+      settings: {
+        set: ['task'],
+        taskTime: 20,
+      },
+    });
+
+    const handleTaskEnd = jest.fn();
+    service.on('taskEnd', handleTaskEnd);
+
+    service.selectTask('TASK_ID');
+    service.startTimer();
+    advanceTimer(10);
+    service.switchTask();
+    advanceTimer(2);
+    service.selectTask('TASK_ID_2');
+
+    expect(handleTaskEnd).toHaveBeenCalledTimes(1);
+    expect(handleTaskEnd).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        taskId: 'TASK_ID',
+        timer: {
+          time: 10,
+          totalTime: 20,
+          type: 'TASK',
+        },
+        overtime: null,
+        timestamp: expect.any(Number),
+      })
+    );
+  });
+
   it('should log the taskVoid event when voiding a task while the timer is active', () => {
     const { advanceTimer, service } = mountPomelloService({
       settings: {

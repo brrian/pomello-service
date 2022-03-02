@@ -6,7 +6,9 @@ export type PomelloEventMap = {
   overtimeEnd: PomelloEvent;
   overtimeStart: PomelloEvent;
   overtimeTick: PomelloEvent;
+  taskEnd: PomelloEvent;
   taskSelect: PomelloEvent;
+  taskStart: PomelloEvent;
   taskVoid: PomelloEvent;
   timerEnd: PomelloEvent;
   timerPause: PomelloEvent;

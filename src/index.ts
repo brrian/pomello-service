@@ -29,7 +29,9 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
     // To avoid showning the time of 0, handleTimerEnd gets fired when the timer
     // gets ticked at 1. The actual time is 0 but it's not shown for aesthetic
     // reasons. So we need to hardcode the time to 0 here.
-    emit('timerEnd', createPomelloEvent({ ...timer, time: 0 }));
+    const adjustedTimer = { ...timer, time: 0 };
+
+    emit('timerEnd', createPomelloEvent(adjustedTimer));
 
     // Injected timers aren't part of the set, so don't increment the index.
     if (!timer.isInjected) {
@@ -38,6 +40,8 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
 
     if (appService.getState().value === AppState.task) {
       appService.setAppState(AppState.taskTimerEndPrompt);
+
+      emit('taskEnd', createPomelloEvent(adjustedTimer));
     } else {
       transitionPomodoroState();
     }
@@ -119,6 +123,9 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
             time: settings.taskTime,
             type: TimerType.task,
           });
+        } else {
+          // The timer already exists, so we're starting a new task
+          emit('taskStart', createPomelloEvent());
         }
 
         return appService.setAppState(AppState.task);
@@ -228,17 +235,26 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
 
     overtimeService.endOvertime();
 
-    const wasPaused = timerService.getState().value === TimerState.paused;
+    const timerState = timerService.getState();
+    const wasPaused = timerState.value === TimerState.paused;
+    const isTaskTimer = timerState.context.timer?.type === TimerType.task;
+
     if (wasPaused) {
       emit('timerResume', createPomelloEvent());
     } else {
       emit('timerStart', createPomelloEvent());
+
+      if (isTaskTimer) {
+        emit('taskStart', createPomelloEvent());
+      }
     }
 
     timerService.startTimer();
   };
 
   const switchTask = (): void => {
+    emit('taskEnd', createPomelloEvent());
+
     appService.switchTask();
   };
 
