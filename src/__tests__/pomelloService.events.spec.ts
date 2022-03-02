@@ -146,7 +146,22 @@ describe('Pomello Service - Events', () => {
     );
   });
 
-  it('should log the taskEnd event whene the task timer ends', () => {
+  it('should not log the task start event on non-task timers', () => {
+    const { service } = mountPomelloService({
+      settings: {
+        set: ['shortBreak'],
+      },
+    });
+
+    const handleTaskStart = jest.fn();
+    service.on('taskStart', handleTaskStart);
+
+    service.startTimer();
+
+    expect(handleTaskStart).not.toHaveBeenCalled();
+  });
+
+  it('should log the taskEnd event when the task timer ends', () => {
     const { advanceTimer, service } = mountPomelloService({
       settings: {
         set: ['task'],
@@ -207,6 +222,22 @@ describe('Pomello Service - Events', () => {
         timestamp: expect.any(Number),
       })
     );
+  });
+
+  it('should not log the taskEnd event when a non-task timer ends', () => {
+    const { advanceTimer, service } = mountPomelloService({
+      settings: {
+        set: ['shortBreak'],
+      },
+    });
+
+    const handleTaskEnd = jest.fn();
+    service.on('taskEnd', handleTaskEnd);
+
+    service.startTimer();
+    advanceTimer();
+
+    expect(handleTaskEnd).not.toHaveBeenCalled();
   });
 
   it('should log the taskVoid event when voiding a task while the timer is active', () => {
