@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 0.0.28 (2022-03-03)
+
+### Features
+
+- add update settings method ([#27](https://github.com/brrian/pomello-service/issues/27)) ([f7f9e8f](https://github.com/brrian/pomello-service/commit/f7f9e8f4294499ae5a13ef91d2bab6cb863116b7))
+
 ### 0.0.27 (2022-03-02)
 
 ### 0.0.26 (2022-03-02)
