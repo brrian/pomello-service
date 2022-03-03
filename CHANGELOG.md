@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 0.0.29 (2022-03-03)
+
+### Features
+
+- consolidate task timer end actions ([#28](https://github.com/brrian/pomello-service/issues/28)) ([368e1d3](https://github.com/brrian/pomello-service/commit/368e1d3024c1af23fc6c31715ee1c6ea0142eb40))
+
 ### 0.0.28 (2022-03-03)
 
 ### Features
