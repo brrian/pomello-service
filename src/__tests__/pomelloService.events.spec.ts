@@ -313,7 +313,7 @@ describe('Pomello Service - Events', () => {
     service.selectTask('TASK_ID');
     service.startTimer();
     advanceTimer();
-    service.continueTask();
+    service.taskTimerEndPromptHandled('continueTask');
     advanceTimer();
     service.startTimer();
     advanceTimer();
@@ -499,7 +499,7 @@ describe('Pomello Service - Events', () => {
     service.selectTask('TASK_TIMER_ID');
     service.startTimer();
     advanceTimer();
-    service.continueTask();
+    service.taskTimerEndPromptHandled('continueTask');
 
     expect(handleTimerStart).toHaveBeenCalledTimes(2);
 

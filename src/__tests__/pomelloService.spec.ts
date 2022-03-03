@@ -74,7 +74,7 @@ describe('Pomello Service', () => {
     service.selectTask('TASK_ID');
     service.startTimer();
     advanceTimer();
-    service.continueTask();
+    service.taskTimerEndPromptHandled('continueTask');
     waitForBatchedEvents();
 
     expect(service.getState()).toMatchObject(
@@ -105,7 +105,7 @@ describe('Pomello Service', () => {
     service.selectTask('TASK_ID');
     service.startTimer();
     advanceTimer();
-    service.selectNewTask();
+    service.taskTimerEndPromptHandled('switchTask');
     waitForBatchedEvents();
 
     expect(service.getState()).toMatchObject(
@@ -329,7 +329,7 @@ describe('Pomello Service', () => {
     service.selectTask('TASK_ID');
     service.startTimer();
     advanceTimer();
-    service.voidTask();
+    service.taskTimerEndPromptHandled('voidTask');
     service.voidPromptHandled();
     advanceTimer();
     waitForBatchedEvents();
@@ -361,7 +361,7 @@ describe('Pomello Service', () => {
     service.startTimer();
     advanceTimer();
     service.updateSettings({ ...settings, shortBreakTime: 10 });
-    service.continueTask();
+    service.taskTimerEndPromptHandled('continueTask');
 
     expect(service.getState()).toMatchObject(
       expect.objectContaining({

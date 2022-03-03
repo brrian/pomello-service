@@ -10,6 +10,7 @@ import {
   PomelloServiceConfig,
   PomelloSettings,
   PomelloState,
+  TaskTimerEndPromptHandledAction,
   Timer,
   TimerState,
   TimerType,
@@ -165,12 +166,6 @@ const createPomelloService = ({
     appService.completeTask();
   };
 
-  const continueTask = (): void => {
-    transitionPomodoroState();
-
-    startTimer();
-  };
-
   const getState = (): PomelloState => {
     const appState = appService.getState();
     const timerState = timerService.getState();
@@ -199,14 +194,6 @@ const createPomelloService = ({
     timerService.pauseTimer();
 
     emit('timerPause', createPomelloEvent());
-  };
-
-  const selectNewTask = (): void => {
-    appService.unsetCurrentTask();
-
-    transitionPomodoroState();
-
-    startTimer();
   };
 
   const selectTask = (taskId: string): void => {
@@ -270,6 +257,22 @@ const createPomelloService = ({
     transitionPomodoroState();
   };
 
+  const taskTimerEndPromptHandled = (action: TaskTimerEndPromptHandledAction): void => {
+    if (action === 'voidTask') {
+      decrementSetIndex();
+
+      return voidTask();
+    }
+
+    if (action === 'switchTask') {
+      appService.unsetCurrentTask();
+    }
+
+    transitionPomodoroState();
+
+    startTimer();
+  };
+
   const updateSettings = (updatedSettings: PomelloSettings): void => {
     settings = updatedSettings;
   };
@@ -279,10 +282,6 @@ const createPomelloService = ({
 
     if (timerService.getState().value === TimerState.active) {
       timerService.destroyTimer();
-    }
-
-    if (appService.getState().value === AppState.taskTimerEndPrompt) {
-      decrementSetIndex();
     }
 
     appService.voidTask();
@@ -302,18 +301,17 @@ const createPomelloService = ({
 
   return {
     completeTask,
-    continueTask,
     getState,
     off,
     on,
     pauseTimer,
-    selectNewTask,
     selectTask,
     setReady,
     skipTimer,
     startTimer,
     switchTask,
     taskCompleteHandled,
+    taskTimerEndPromptHandled,
     updateSettings,
     voidPromptHandled,
     voidTask,
