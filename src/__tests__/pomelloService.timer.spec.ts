@@ -119,7 +119,7 @@ describe('Pomello Service - Timers', () => {
     service.selectTask('TASK_TIMER_ID');
     service.startTimer();
     advanceTimer();
-    service.continueTask();
+    service.taskTimerEndPromptHandled('continueTask');
 
     expect(service.getState().timer).toMatchObject({
       isActive: true,

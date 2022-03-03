@@ -16,6 +16,7 @@ export type { PomelloSettings } from './PomelloSettings';
 export type { PomelloState } from './PomelloState';
 export type { StartOvertimeCountdownOptions } from './StartOvertimeCountdownOptions';
 export type { State } from './State';
+export type { TaskTimerEndPromptHandledAction } from './TaskTimerEndPromptHandledAction';
 export type { Ticker } from './Ticker';
 export type { Timer } from './Timer';
 export type { TimerContext } from './TimerContext';

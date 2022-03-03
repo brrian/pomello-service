@@ -40,7 +40,7 @@ describe('Pomello Service - Overtime', () => {
 
     expect(service.getState().overtime).toBe(null);
 
-    service.continueTask();
+    service.taskTimerEndPromptHandled('continueTask');
     advanceTimer(10);
 
     expect(service.getState().overtime).toBe(null);
@@ -76,7 +76,7 @@ describe('Pomello Service - Overtime', () => {
     service.startTimer();
     advanceTimer();
     advanceTimer(15);
-    service.continueTask();
+    service.taskTimerEndPromptHandled('continueTask');
 
     expect(service.getState().overtime).toBe(null);
   });

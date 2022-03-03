@@ -75,7 +75,7 @@ describe('Pomello Service - Pomodoro Sets', () => {
 
     service.startTimer();
     advanceTimer();
-    service.continueTask();
+    service.taskTimerEndPromptHandled('continueTask');
 
     expect(service.getState()).toMatchObject({
       currentTaskId: 'TASK_ID',
@@ -91,7 +91,7 @@ describe('Pomello Service - Pomodoro Sets', () => {
     });
 
     advanceTimer();
-    service.selectNewTask();
+    service.taskTimerEndPromptHandled('switchTask');
     service.selectTask('NEW_TASK_ID');
 
     expect(service.getState()).toMatchObject({
@@ -204,7 +204,7 @@ describe('Pomello Service - Pomodoro Sets', () => {
 
     service.startTimer();
     advanceTimer();
-    service.continueTask();
+    service.taskTimerEndPromptHandled('continueTask');
 
     expect(service.getState()).toMatchObject({
       currentTaskId: 'TASK_ID',
