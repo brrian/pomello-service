@@ -45,12 +45,14 @@ const mountPomelloService = ({
   settings = {},
   initialize = true,
 }: MountPomelloServiceOptions = {}) => {
+  const mergedSettings: PomelloSettings = {
+    ...defaultSettings,
+    ...settings,
+  };
+
   const service = createPomelloService({
     createTicker,
-    settings: {
-      ...defaultSettings,
-      ...settings,
-    },
+    settings: mergedSettings,
   });
 
   if (initialize) {
@@ -85,6 +87,7 @@ const mountPomelloService = ({
     advanceTimer,
     attachUpdateHandler,
     service,
+    settings: mergedSettings,
     waitForBatchedEvents,
   };
 };
