@@ -8,13 +8,19 @@ import {
   PomelloEvent,
   PomelloEventMap,
   PomelloServiceConfig,
+  PomelloSettings,
   PomelloState,
   Timer,
   TimerState,
   TimerType,
 } from './models';
 
-const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) => {
+const createPomelloService = ({
+  createTicker,
+  settings: initialSettings,
+}: PomelloServiceConfig) => {
+  let settings = initialSettings;
+
   const { batchedEmit, emit, on, off } = createEventEmitter<PomelloEventMap>();
 
   const handleOvertimeStart = (): void => {
@@ -264,6 +270,10 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
     transitionPomodoroState();
   };
 
+  const updateSettings = (updatedSettings: PomelloSettings): void => {
+    settings = updatedSettings;
+  };
+
   const voidTask = (): void => {
     emit('taskVoid', createPomelloEvent());
 
@@ -304,8 +314,9 @@ const createPomelloService = ({ createTicker, settings }: PomelloServiceConfig) 
     startTimer,
     switchTask,
     taskCompleteHandled,
-    voidTask,
+    updateSettings,
     voidPromptHandled,
+    voidTask,
   };
 };
 

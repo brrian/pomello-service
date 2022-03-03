@@ -348,4 +348,30 @@ describe('Pomello Service', () => {
       })
     );
   });
+
+  it('should update the settings', () => {
+    const { advanceTimer, service, settings } = mountPomelloService({
+      settings: {
+        set: ['task', 'shortBreak'],
+        shortBreakTime: 30,
+      },
+    });
+
+    service.selectTask('TASK_ID');
+    service.startTimer();
+    advanceTimer();
+    service.updateSettings({ ...settings, shortBreakTime: 10 });
+    service.continueTask();
+
+    expect(service.getState()).toMatchObject(
+      expect.objectContaining({
+        value: 'SHORT_BREAK',
+        currentTaskId: 'TASK_ID',
+        timer: expect.objectContaining({
+          time: 10,
+          totalTime: 10,
+        }),
+      })
+    );
+  });
 });
