@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 0.0.30 (2022-03-04)
+
+### Features
+
+- add between tasks grace period handling ([#29](https://github.com/brrian/pomello-service/issues/29)) ([0d7b6da](https://github.com/brrian/pomello-service/commit/0d7b6da0e5071e03a986942e12eb6da62f0e9637))
+
 ### 0.0.29 (2022-03-03)
 
 ### Features
