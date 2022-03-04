@@ -15,6 +15,7 @@ import {
   TimerState,
   TimerType,
 } from './models';
+import timerMarker from './timerMarker';
 
 const createPomelloService = ({
   createTicker,
@@ -23,6 +24,8 @@ const createPomelloService = ({
   let settings = initialSettings;
 
   const { batchedEmit, emit, on, off } = createEventEmitter<PomelloEventMap>();
+
+  const taskTimerMarker = timerMarker();
 
   const handleOvertimeStart = (): void => {
     emit('overtimeStart', createPomelloEvent());
@@ -36,9 +39,9 @@ const createPomelloService = ({
     // To avoid showning the time of 0, handleTimerEnd gets fired when the timer
     // gets ticked at 1. The actual time is 0 but it's not shown for aesthetic
     // reasons. So we need to hardcode the time to 0 here.
-    const adjustedTimer = { ...timer, time: 0 };
+    const adjustedTimer = { time: 0, totalTime: timer.totalTime, type: timer.type };
 
-    emit('timerEnd', createPomelloEvent(adjustedTimer));
+    emit('timerEnd', createPomelloEvent({ timer: adjustedTimer }));
 
     // Injected timers aren't part of the set, so don't increment the index.
     if (!timer.isInjected) {
@@ -46,9 +49,11 @@ const createPomelloService = ({
     }
 
     if (appService.getState().value === AppState.task) {
+      taskTimerMarker.unsetMarker();
+
       appService.setAppState(AppState.taskTimerEndPrompt);
 
-      emit('taskEnd', createPomelloEvent(adjustedTimer));
+      emit('taskEnd', createPomelloEvent({ timer: adjustedTimer }));
     } else {
       transitionPomodoroState();
     }
@@ -87,8 +92,8 @@ const createPomelloService = ({
 
   let setIndex = 0;
 
-  const createPomelloEvent = (timerOverride?: Timer): PomelloEvent => {
-    const timer = timerOverride ? timerOverride : timerService.getState().context.timer;
+  const createPomelloEvent = (eventOverrides: Partial<PomelloEvent> = {}): PomelloEvent => {
+    const timer = timerService.getState().context.timer;
 
     return {
       taskId: appService.getState().context.currentTaskId,
@@ -101,6 +106,7 @@ const createPomelloService = ({
         : null,
       overtime: overtimeService.getState().context.overtime,
       timestamp: Date.now(),
+      ...eventOverrides,
     };
   };
 
@@ -132,7 +138,22 @@ const createPomelloService = ({
           });
         } else {
           // The timer already exists, so we're starting a new task
-          emit('taskStart', createPomelloEvent());
+          const { timer } = timerService.getState().context;
+          const previousTaskMarker = taskTimerMarker.getMarker(settings.betweenTasksGracePeriod);
+
+          let eventOverrides = {};
+          if (timer && previousTaskMarker) {
+            eventOverrides = {
+              timer: {
+                time: previousTaskMarker.time,
+                totalTime: timer.totalTime,
+                type: timer.type,
+              },
+              timestamp: previousTaskMarker.timestamp,
+            };
+          }
+
+          emit('taskStart', createPomelloEvent(eventOverrides));
         }
 
         return appService.setAppState(AppState.task);
@@ -163,6 +184,8 @@ const createPomelloService = ({
   };
 
   const completeTask = (): void => {
+    taskTimerMarker.setMarker(timerService.getState().context.timer);
+
     appService.completeTask();
   };
 
@@ -247,6 +270,8 @@ const createPomelloService = ({
 
   const switchTask = (): void => {
     emit('taskEnd', createPomelloEvent());
+
+    taskTimerMarker.setMarker(timerService.getState().context.timer);
 
     appService.switchTask();
   };

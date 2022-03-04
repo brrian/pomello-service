@@ -738,4 +738,110 @@ describe('Pomello Service - Events', () => {
       })
     );
   });
+
+  it("should log a switched task's start time with the previous task's end time if within the grace period", () => {
+    const { advanceTimer, service } = mountPomelloService({
+      settings: {
+        betweenTasksGracePeriod: 10,
+        set: ['task'],
+        taskTime: 30,
+      },
+    });
+
+    jest.setSystemTime(0);
+
+    const handleTaskStart = jest.fn();
+    service.on('taskStart', handleTaskStart);
+
+    service.selectTask('TASK_ID');
+    service.startTimer();
+    advanceTimer(10);
+    service.switchTask();
+    advanceTimer(9);
+    service.selectTask('NEW_TASK_ID');
+
+    expect(handleTaskStart).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        taskId: 'NEW_TASK_ID',
+        timer: {
+          time: 20,
+          totalTime: 30,
+          type: 'TASK',
+        },
+        overtime: null,
+        timestamp: 10000,
+      })
+    );
+  });
+
+  it("should log a new task's start time with the previously completed task's end time if within the grace period", () => {
+    const { advanceTimer, service } = mountPomelloService({
+      settings: {
+        betweenTasksGracePeriod: 10,
+        set: ['task'],
+        taskTime: 30,
+      },
+    });
+
+    jest.setSystemTime(0);
+
+    const handleTaskStart = jest.fn();
+    service.on('taskStart', handleTaskStart);
+
+    service.selectTask('TASK_ID');
+    service.startTimer();
+    advanceTimer(10);
+    service.completeTask();
+    service.taskCompleteHandled();
+    advanceTimer(9);
+    service.selectTask('NEW_TASK_ID');
+
+    expect(handleTaskStart).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        taskId: 'NEW_TASK_ID',
+        timer: {
+          time: 20,
+          totalTime: 30,
+          type: 'TASK',
+        },
+        overtime: null,
+        timestamp: 10000,
+      })
+    );
+  });
+
+  it("should not log a switched task's start time with the previous task's end time if outside the grace period", () => {
+    const { advanceTimer, service } = mountPomelloService({
+      settings: {
+        betweenTasksGracePeriod: 5,
+        set: ['task'],
+        taskTime: 30,
+      },
+    });
+
+    jest.setSystemTime(0);
+
+    const handleTaskStart = jest.fn();
+    service.on('taskStart', handleTaskStart);
+
+    service.selectTask('TASK_ID');
+    service.startTimer();
+    advanceTimer(10);
+    service.switchTask();
+    advanceTimer(6);
+    service.selectTask('NEW_TASK_ID');
+
+    expect(handleTaskStart).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        taskId: 'NEW_TASK_ID',
+        timer: {
+          time: 14,
+          totalTime: 30,
+          type: 'TASK',
+        },
+        overtime: null,
+        timestamp: 16000,
+      })
+    );
+  });
 });
