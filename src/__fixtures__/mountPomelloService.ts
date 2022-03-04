@@ -8,6 +8,7 @@ interface MountPomelloServiceOptions {
 }
 
 const defaultSettings: PomelloSettings = {
+  betweenTasksGracePeriod: 0,
   longBreakTime: 10,
   overtimeDelay: 5,
   set: ['task', 'shortBreak', 'task', 'shortBreak', 'task', 'shortBreak', 'task', 'longBreak'],

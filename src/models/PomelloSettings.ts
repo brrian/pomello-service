@@ -1,4 +1,5 @@
 export interface PomelloSettings {
+  betweenTasksGracePeriod: number;
   longBreakTime: number;
   overtimeDelay: number;
   set: SetItem[];
