@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 0.0.32 (2022-03-05)
+
+### Features
+
+- prevent transition in taskCompletedPrompt state ([#31](https://github.com/brrian/pomello-service/issues/31)) ([071f8a5](https://github.com/brrian/pomello-service/commit/071f8a5c90e01d57fb392a9f8f6b4cd18d48de22))
+
 ### 0.0.31 (2022-03-05)
 
 ### Bug Fixes
