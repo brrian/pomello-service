@@ -253,6 +253,38 @@ describe('Pomello Service', () => {
     );
   });
 
+  it('should not transition during the task completed prompt when the timer ends', () => {
+    const { advanceTimer, attachUpdateHandler, service, waitForBatchedEvents } =
+      mountPomelloService({
+        settings: {
+          set: ['task', 'shortBreak'],
+        },
+      });
+
+    const handleServiceUpdate = attachUpdateHandler();
+
+    service.selectTask('TASK_ID');
+    service.startTimer();
+    advanceTimer(10);
+    service.completeTask();
+    advanceTimer();
+    waitForBatchedEvents();
+
+    expect(service.getState()).toMatchObject(
+      expect.objectContaining({
+        value: 'TASK_COMPLETE_PROMPT',
+        currentTaskId: 'TASK_ID',
+      })
+    );
+
+    expect(handleServiceUpdate).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        value: 'TASK_COMPLETE_PROMPT',
+        currentTaskId: 'TASK_ID',
+      })
+    );
+  });
+
   it('should transition after voiding a task when the timer has ended', () => {
     const { advanceTimer, attachUpdateHandler, service, waitForBatchedEvents } =
       mountPomelloService({
@@ -345,6 +377,38 @@ describe('Pomello Service', () => {
       expect.objectContaining({
         value: 'TASK',
         currentTaskId: 'TASK_ID',
+      })
+    );
+  });
+
+  it('should transition during select task when the timer has ended', () => {
+    const { advanceTimer, attachUpdateHandler, service, waitForBatchedEvents } =
+      mountPomelloService({
+        settings: {
+          set: ['task', 'longBreak'],
+        },
+      });
+
+    const handleServiceUpdate = attachUpdateHandler();
+
+    service.selectTask('TASK_ID');
+    service.startTimer();
+    advanceTimer(10);
+    service.switchTask();
+    advanceTimer();
+    waitForBatchedEvents();
+
+    expect(service.getState()).toMatchObject(
+      expect.objectContaining({
+        value: 'LONG_BREAK',
+        currentTaskId: null,
+      })
+    );
+
+    expect(handleServiceUpdate).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        value: 'LONG_BREAK',
+        currentTaskId: null,
       })
     );
   });
