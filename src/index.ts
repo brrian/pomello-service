@@ -54,7 +54,7 @@ const createPomelloService = ({
       appService.setAppState(AppState.taskTimerEndPrompt);
 
       emit('taskEnd', createPomelloEvent({ timer: adjustedTimer }));
-    } else {
+    } else if (appService.getState().value !== AppState.taskCompletePrompt) {
       transitionPomodoroState();
     }
 
