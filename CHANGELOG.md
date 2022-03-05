@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 0.0.31 (2022-03-05)
+
+### Bug Fixes
+
+- swap out setImmediate for setTimeout ([#30](https://github.com/brrian/pomello-service/issues/30)) ([72e3a86](https://github.com/brrian/pomello-service/commit/72e3a860e78af78889b308ce6a5e2095dcca8752))
+
 ### 0.0.30 (2022-03-04)
 
 ### Features
