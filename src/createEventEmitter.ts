@@ -51,13 +51,13 @@ const createEventEmitter = <TEventMap extends EventMap>() => {
 
     queuedEvents.set(event, data);
 
-    setImmediate(() => {
+    setTimeout(() => {
       for (const [event, data] of queuedEvents) {
         emit(event, data);
       }
 
       queuedEvents.clear();
-    });
+    }, 0);
   };
 
   return {
