@@ -285,6 +285,40 @@ describe('Pomello Service', () => {
     );
   });
 
+  it('should transition after the task completed prompt has been handled after the timer has ended', () => {
+    const { advanceTimer, attachUpdateHandler, service, waitForBatchedEvents } =
+      mountPomelloService({
+        settings: {
+          set: ['task', 'shortBreak'],
+          taskTime: 30,
+        },
+      });
+
+    const handleServiceUpdate = attachUpdateHandler();
+
+    service.selectTask('TASK_ID');
+    service.startTimer();
+    advanceTimer(10);
+    service.completeTask();
+    advanceTimer();
+    service.taskCompleteHandled();
+    waitForBatchedEvents();
+
+    expect(service.getState()).toMatchObject(
+      expect.objectContaining({
+        value: 'SHORT_BREAK',
+        currentTaskId: null,
+      })
+    );
+
+    expect(handleServiceUpdate).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        value: 'SHORT_BREAK',
+        currentTaskId: null,
+      })
+    );
+  });
+
   it('should transition after voiding a task when the timer has ended', () => {
     const { advanceTimer, attachUpdateHandler, service, waitForBatchedEvents } =
       mountPomelloService({
