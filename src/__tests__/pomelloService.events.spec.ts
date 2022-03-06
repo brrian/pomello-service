@@ -220,6 +220,37 @@ describe('Pomello Service - Events', () => {
     );
   });
 
+  it('should log the taskEndEvent when completing a task', () => {
+    const { advanceTimer, service } = mountPomelloService({
+      settings: {
+        set: ['task'],
+        taskTime: 20,
+      },
+    });
+
+    const handleTaskEnd = jest.fn();
+    service.on('taskEnd', handleTaskEnd);
+
+    service.selectTask('TASK_ID');
+    service.startTimer();
+    advanceTimer(10);
+    service.completeTask();
+
+    expect(handleTaskEnd).toHaveBeenCalledTimes(1);
+    expect(handleTaskEnd).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        taskId: 'TASK_ID',
+        timer: {
+          time: 10,
+          totalTime: 20,
+          type: 'TASK',
+        },
+        overtime: null,
+        timestamp: expect.any(Number),
+      })
+    );
+  });
+
   it('should not log the taskEnd event when a non-task timer ends', () => {
     const { advanceTimer, service } = mountPomelloService({
       settings: {
