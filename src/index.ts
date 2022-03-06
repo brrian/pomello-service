@@ -193,6 +193,8 @@ const createPomelloService = ({
   };
 
   const completeTask = (): void => {
+    emit('taskEnd', createPomelloEvent());
+
     taskTimerMarker.setMarker(timerService.getState().context.timer);
 
     appService.completeTask();
