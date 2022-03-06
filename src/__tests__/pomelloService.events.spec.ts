@@ -653,8 +653,11 @@ describe('Pomello Service - Events', () => {
       settings: {
         set: ['task'],
         overtimeDelay: 10,
+        taskTime: 20,
       },
     });
+
+    jest.setSystemTime(0);
 
     const handleOvertimeStart = jest.fn();
 
@@ -669,10 +672,10 @@ describe('Pomello Service - Events', () => {
         taskId: 'TASK_TIMER_ID',
         timer: null,
         overtime: {
-          time: 10,
+          time: 0,
           type: 'TASK',
         },
-        timestamp: expect.any(Number),
+        timestamp: 20000,
       })
     );
   });
