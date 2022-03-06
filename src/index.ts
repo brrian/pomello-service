@@ -4,6 +4,7 @@ import createOvertimeService from './createOvertimeService';
 import createTimerService from './createTimerService';
 import {
   AppState,
+  Overtime,
   OvertimeState,
   PomelloEvent,
   PomelloEventMap,
@@ -27,8 +28,16 @@ const createPomelloService = ({
 
   const taskTimerMarker = timerMarker();
 
-  const handleOvertimeStart = (): void => {
-    emit('overtimeStart', createPomelloEvent());
+  const handleOvertimeStart = (overtime: Overtime): void => {
+    // Due to the overtime delay, when this is triggered the overtime is already
+    // active. So we need to offset the time by the overtimeDelay.
+    emit(
+      'overtimeStart',
+      createPomelloEvent({
+        overtime: { ...overtime, time: 0 },
+        timestamp: Date.now() - overtime.time * 1000,
+      })
+    );
   };
 
   const handleOvertimeTick = (): void => {
