@@ -1,0 +1,52 @@
+body {
+  font-family: -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
+    Ubuntu, Arial, sans-serif;
+}
+
+hr {
+  border: 0;
+  border-bottom: 1px solid #ccc;
+}
+
+table {
+  min-width: 320px;
+}
+
+td {
+  padding: 4px;
+}
+
+.container {
+  position: fixed;
+  top: 20%;
+  left: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.actions-container {
+  min-height: 21px;
+}
+
+.actions {
+  display: none;
+}
+
+[data-timer-state='IDLE'] .timer-ready,
+[data-timer-state='ACTIVE'] .timer-active,
+[data-timer-state='PAUSED'] .timer-paused,
+[data-app-state='SELECT_TASK'] .select-task,
+[data-app-state='TASK'][data-timer-state='ACTIVE'] .active-task-timer,
+[data-app-state='TASK'][data-timer-state='PAUSED'] .active-task-timer,
+[data-app-state='SHORT_BREAK'][data-timer-state='ACTIVE'] .active-break-timer,
+[data-app-state='SHORT_BREAK'][data-timer-state='PAUSED'] .active-break-timer,
+[data-app-state='LONG_BREAK'][data-timer-state='ACTIVE'] .active-break-timer,
+[data-app-state='LONG_BREAK'][data-timer-state='PAUSED'] .active-break-timer,
+[data-app-state='TASK_TIMER_END_PROMPT'] .task-timer-ended,
+[data-app-state='TASK_COMPLETE_PROMPT'] .task-complete-prompt,
+[data-app-state='TASK_VOID_PROMPT'] .task-void-prompt {
+  display: inline-block;
+}
