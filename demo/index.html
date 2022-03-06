@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pomello Service Demo</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <div class="container">
+    <table>
+      <tr>
+        <td>App state</td>
+        <td id="app-state"></td>
+      </tr>
+      <tr>
+        <td>Current task</td>
+        <td id="current-task"></td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <hr />
+        </td>
+      </tr>
+      <tr>
+        <td>Speed</td>
+        <td>
+          <button data-speed="1000">1x</button>
+          <button data-speed="500">2x</button>
+          <button data-speed="100">10x</button>
+        </td>
+      </tr>
+      <tr>
+        <td>Type</td>
+        <td id="timer-type"></td>
+      </tr>
+      <tr>
+        <td>State</td>
+        <td id="timer-state"></td>
+      </tr>
+      <tr>
+        <td>Time</td>
+        <td id="timer-time"></td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <hr />
+        </td>
+      </tr>
+      <tr>
+        <td>Type</td>
+        <td id="overtime-type"></td>
+      </tr>
+      <tr>
+        <td>Time</td>
+        <td id="overtime-time"></td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <hr />
+        </td>
+      </tr>
+    </table>
+    <div class="actions-container">
+      <span class="select-task actions">
+        <button data-action="selectTask" data-parameters="111_TASK_111">Task one</button>
+        <button data-action="selectTask" data-parameters="222_TASK_222">Task two</button>
+        <button data-action="selectTask" data-parameters="333_TASK_333">Task three</button>
+      </span>
+      <span class="timer-ready actions">
+        <button data-action="startTimer">Start</button>
+      </span>
+      <span class="timer-paused actions">
+        <button data-action="startTimer">Resume</button>
+      </span>
+      <span class="active-task-timer actions">
+        <button data-action="pauseTimer">Pause</button>
+        <button data-action="switchTask">Switch task</button>
+        <button data-action="completeTask">Complete task early</button>
+        <button data-action="voidTask">Void task</button>
+        <button data-action="skipTimer">Skip timer</button>
+      </span>
+      <span class="active-break-timer actions">
+        <button data-action="skipTimer">Skip break</button>
+      </span>
+      <span class="task-timer-ended actions">
+        <button data-action="taskTimerEndPromptHandled" data-parameters="continueTask">Continue task</button>
+        <button data-action="taskTimerEndPromptHandled" data-parameters="switchTask">Select new task</button>
+        <button data-action="taskTimerEndPromptHandled" data-parameters="voidTask">Void task</button>
+      </span>
+      <span class="task-complete-prompt actions">
+        <button data-action="taskCompleteHandled">Move task</button>
+      </span>
+      <span class="task-void-prompt actions">
+        <button data-action="voidPromptHandled">Enter distraction</button>
+      </span>
+    </div>
+  </div>
+  <script src="./pomello-service.umd.js"></script>
+  <script src="./main.js"></script>
+</body>
+
+</html>
