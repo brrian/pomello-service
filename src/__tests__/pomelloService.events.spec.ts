@@ -42,11 +42,7 @@ describe('Pomello Service - Events', () => {
     expect(handleTaskSelect).toHaveBeenCalledWith(
       expect.objectContaining({
         taskId: 'TASK_ID',
-        timer: {
-          time: 20,
-          totalTime: 20,
-          type: 'TASK',
-        },
+        timer: null,
         overtime: null,
         timestamp: expect.any(Number),
       })
