@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 0.0.34 (2022-03-06)
+
+### Features
+
+- update order for task select event ([#33](https://github.com/brrian/pomello-service/issues/33)) ([61c7434](https://github.com/brrian/pomello-service/commit/61c7434ec4b998ed3a9bb1d2ab6cbee33274e66d))
+
 ### 0.0.33 (2022-03-05)
 
 ### 0.0.32 (2022-03-05)
