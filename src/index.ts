@@ -222,9 +222,9 @@ const createPomelloService = ({
   const selectTask = (taskId: string): void => {
     appService.selectTask(taskId);
 
-    transitionPomodoroState();
-
     emit('taskSelect', createPomelloEvent());
+
+    transitionPomodoroState();
   };
 
   const setReady = (): void => {
