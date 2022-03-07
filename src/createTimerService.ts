@@ -1,10 +1,15 @@
 import createState from './createState';
-import { CreateTimerOptions, CreateTimerServiceOptions, TimerContext, TimerState } from './models';
+import {
+  CreateTimerOptions,
+  CreateTimerServiceOptions,
+  Timer,
+  TimerContext,
+  TimerState,
+} from './models';
 
 interface Marker {
-  time: number;
+  timer: Timer;
   timestamp: number;
-  ttl?: number;
 }
 
 const createTimerService = ({
@@ -22,6 +27,10 @@ const createTimerService = ({
   });
 
   const markers = new Map<string, Marker>();
+
+  const clearMarkers = (): void => {
+    markers.clear();
+  };
 
   const startTicker = (): void => {
     ticker.start(() => {
@@ -77,18 +86,7 @@ const createTimerService = ({
   };
 
   const getMarker = (id: string): Marker | null => {
-    const marker = markers.get(id);
-
-    if (
-      !marker ||
-      (marker.ttl !== undefined && Date.now() - marker.timestamp > marker.ttl * 1000)
-    ) {
-      markers.delete(id);
-
-      return null;
-    }
-
-    return marker;
+    return markers.get(id) ?? null;
   };
 
   const pauseTimer = (): void => {
@@ -97,14 +95,13 @@ const createTimerService = ({
     ticker.stop();
   };
 
-  const setMarker = (id: string, ttl?: number): void => {
+  const setMarker = (id: string): void => {
     const { timer } = getState().context;
 
     if (timer) {
       markers.set(id, {
-        time: timer.time,
+        timer,
         timestamp: Date.now(),
-        ttl,
       });
     }
   };
@@ -115,11 +112,8 @@ const createTimerService = ({
     startTicker();
   };
 
-  const unsetMarker = (id: string): void => {
-    markers.delete(id);
-  };
-
   return {
+    clearMarkers,
     createTimer,
     destroyTimer,
     getMarker,
@@ -127,7 +121,6 @@ const createTimerService = ({
     pauseTimer,
     setMarker,
     startTimer,
-    unsetMarker,
   };
 };
 
