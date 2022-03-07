@@ -45,12 +45,7 @@ const createPomelloService = ({
   };
 
   const handleTimerEnd = (timer: Timer): void => {
-    // To avoid showning the time of 0, handleTimerEnd gets fired when the timer
-    // gets ticked at 1. The actual time is 0 but it's not shown for aesthetic
-    // reasons. So we need to hardcode the time to 0 here.
-    const adjustedTimer = { time: 0, totalTime: timer.totalTime, type: timer.type };
-
-    emit('timerEnd', createPomelloEvent({ timer: adjustedTimer }));
+    emit('timerEnd', createPomelloEvent());
 
     // Injected timers aren't part of the set, so don't increment the index.
     if (!timer.isInjected) {
@@ -62,7 +57,7 @@ const createPomelloService = ({
 
       appService.setAppState(AppState.taskTimerEndPrompt);
 
-      emit('taskEnd', createPomelloEvent({ timer: adjustedTimer }));
+      emit('taskEnd', createPomelloEvent());
     } else if (appService.getState().value !== AppState.taskCompletePrompt) {
       transitionPomodoroState();
     }

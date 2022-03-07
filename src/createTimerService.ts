@@ -27,19 +27,26 @@ const createTimerService = ({
     const { timer } = getState().context;
 
     if (timer) {
-      if (timer.time === 1) {
-        setState(TimerState.idle, { timer: null });
+      const newTimer = {
+        ...timer,
+        time: timer.time - 1,
+      };
 
+      setState(null, { timer: newTimer });
+
+      if (newTimer.time === 0) {
         ticker.stop();
 
-        onTimerEnd(timer);
-      } else {
-        setState(null, {
-          timer: {
-            ...timer,
-            time: timer.time - 1,
-          },
-        });
+        onTimerEnd(newTimer);
+
+        // In certain cases, a new timer will already have been created after
+        // onTimerEnd finishes. So we just check to see if it was the same timer
+        // that was ended before cleaning it up.
+        const { timer: currentTimer } = getState().context;
+
+        if (currentTimer && currentTimer.time === 0) {
+          setState(TimerState.idle, { timer: null });
+        }
       }
     }
   };
