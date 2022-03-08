@@ -16,7 +16,6 @@ import {
   TimerState,
   TimerType,
 } from './models';
-import timerMarker from './timerMarker';
 
 const createPomelloService = ({
   createTicker,
@@ -25,8 +24,6 @@ const createPomelloService = ({
   let settings = initialSettings;
 
   const { batchedEmit, emit, on, off } = createEventEmitter<PomelloEventMap>();
-
-  const taskTimerMarker = timerMarker();
 
   const handleOvertimeStart = (overtime: Overtime): void => {
     // Due to the overtime delay, when this is triggered the overtime is already
@@ -53,8 +50,6 @@ const createPomelloService = ({
     }
 
     if (appService.getState().value === AppState.task) {
-      taskTimerMarker.unsetMarker();
-
       appService.setAppState(AppState.taskTimerEndPrompt);
 
       emit('taskEnd', createPomelloEvent());
@@ -135,25 +130,27 @@ const createPomelloService = ({
 
     if (set === 'task') {
       if (appService.getState().context.currentTaskId) {
-        if (!timerService.getState().context.timer) {
+        const { timer } = timerService.getState().context;
+
+        if (!timer) {
           timerService.createTimer({
             time: settings.taskTime,
             type: TimerType.task,
           });
         } else {
           // The timer already exists, so we're starting a new task
-          const { timer } = timerService.getState().context;
-          const previousTaskMarker = taskTimerMarker.getMarker(settings.betweenTasksGracePeriod);
 
-          let eventOverrides = {};
-          if (timer && previousTaskMarker) {
+          let eventOverrides = undefined;
+
+          const tarkStartMarker = timerService.getMarker('taskStart');
+          if (tarkStartMarker) {
             eventOverrides = {
               timer: {
-                time: previousTaskMarker.time,
+                time: tarkStartMarker.time,
                 totalTime: timer.totalTime,
                 type: timer.type,
               },
-              timestamp: previousTaskMarker.timestamp,
+              timestamp: tarkStartMarker.timestamp,
             };
           }
 
@@ -190,7 +187,7 @@ const createPomelloService = ({
   const completeTask = (): void => {
     emit('taskEnd', createPomelloEvent());
 
-    taskTimerMarker.setMarker(timerService.getState().context.timer);
+    timerService.setMarker('taskStart', settings.betweenTasksGracePeriod);
 
     appService.completeTask();
   };
@@ -277,7 +274,7 @@ const createPomelloService = ({
   const switchTask = (): void => {
     emit('taskEnd', createPomelloEvent());
 
-    taskTimerMarker.setMarker(timerService.getState().context.timer);
+    timerService.setMarker('taskStart', settings.betweenTasksGracePeriod);
 
     appService.switchTask();
   };
@@ -292,16 +289,18 @@ const createPomelloService = ({
     if (action === 'voidTask') {
       decrementSetIndex();
 
-      return voidTask();
+      voidTask();
+    } else {
+      if (action === 'switchTask') {
+        appService.unsetCurrentTask();
+      }
+
+      transitionPomodoroState();
+
+      startTimer();
     }
 
-    if (action === 'switchTask') {
-      appService.unsetCurrentTask();
-    }
-
-    transitionPomodoroState();
-
-    startTimer();
+    timerService.unsetMarker('taskStart');
   };
 
   const updateSettings = (updatedSettings: PomelloSettings): void => {
