@@ -234,4 +234,64 @@ describe('Pomello Service - Pomodoro Sets', () => {
       value: 'SHORT_BREAK',
     });
   });
+
+  it('should not advance the set if a task has been voided after the timer has ended', () => {
+    const { advanceTimer, service } = mountPomelloService({
+      settings: {
+        set: ['task', 'longBreak'],
+        shortBreakTime: 5,
+        taskTime: 20,
+      },
+    });
+
+    service.selectTask('TASK_ID');
+    service.startTimer();
+    advanceTimer();
+    service.taskTimerEndPromptHandled('voidTask');
+    service.voidPromptHandled();
+    advanceTimer();
+
+    expect(service.getState()).toMatchObject({
+      currentTaskId: 'TASK_ID',
+      timer: {
+        isActive: false,
+        isInjected: false,
+        isPaused: false,
+        time: 20,
+        totalTime: 20,
+        type: 'TASK',
+      },
+      value: 'TASK',
+    });
+  });
+
+  it('should not advance the set if a task has voided while the timer is active', () => {
+    const { advanceTimer, service } = mountPomelloService({
+      settings: {
+        set: ['task', 'longBreak'],
+        shortBreakTime: 5,
+        taskTime: 20,
+      },
+    });
+
+    service.selectTask('TASK_ID');
+    service.startTimer();
+    advanceTimer(8);
+    service.voidTask();
+    service.voidPromptHandled();
+    advanceTimer();
+
+    expect(service.getState()).toMatchObject({
+      currentTaskId: 'TASK_ID',
+      timer: {
+        isActive: false,
+        isInjected: false,
+        isPaused: false,
+        time: 20,
+        totalTime: 20,
+        type: 'TASK',
+      },
+      value: 'TASK',
+    });
+  });
 });

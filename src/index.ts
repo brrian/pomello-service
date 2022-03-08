@@ -50,6 +50,8 @@ const createPomelloService = ({
     }
 
     if (appService.getState().value === AppState.task) {
+      timerService.setMarker('taskEnd');
+
       appService.setAppState(AppState.taskTimerEndPrompt);
 
       emit('taskEnd', createPomelloEvent());
@@ -132,7 +134,7 @@ const createPomelloService = ({
       if (appService.getState().context.currentTaskId) {
         const { timer } = timerService.getState().context;
 
-        if (!timer) {
+        if (!timer || timer.time === 0) {
           timerService.createTimer({
             time: settings.taskTime,
             type: TimerType.task,
@@ -143,15 +145,19 @@ const createPomelloService = ({
           let eventOverrides = undefined;
 
           const tarkStartMarker = timerService.getMarker('taskStart');
-          if (tarkStartMarker) {
+          const expirationTimestamp = Date.now() - settings.betweenTasksGracePeriod * 1000;
+
+          if (tarkStartMarker && tarkStartMarker.timestamp > expirationTimestamp) {
             eventOverrides = {
               timer: {
-                time: tarkStartMarker.time,
+                time: tarkStartMarker.timer.time,
                 totalTime: timer.totalTime,
                 type: timer.type,
               },
               timestamp: tarkStartMarker.timestamp,
             };
+          } else {
+            timerService.setMarker('taskStart');
           }
 
           emit('taskStart', createPomelloEvent(eventOverrides));
@@ -187,7 +193,7 @@ const createPomelloService = ({
   const completeTask = (): void => {
     emit('taskEnd', createPomelloEvent());
 
-    timerService.setMarker('taskStart', settings.betweenTasksGracePeriod);
+    timerService.setMarker('taskStart');
 
     appService.completeTask();
   };
@@ -269,12 +275,14 @@ const createPomelloService = ({
     }
 
     timerService.startTimer();
+
+    timerService.setMarker('taskStart');
   };
 
   const switchTask = (): void => {
     emit('taskEnd', createPomelloEvent());
 
-    timerService.setMarker('taskStart', settings.betweenTasksGracePeriod);
+    timerService.setMarker('taskStart');
 
     appService.switchTask();
   };
@@ -300,7 +308,7 @@ const createPomelloService = ({
       startTimer();
     }
 
-    timerService.unsetMarker('taskStart');
+    timerService.clearMarkers();
   };
 
   const updateSettings = (updatedSettings: PomelloSettings): void => {
@@ -308,7 +316,26 @@ const createPomelloService = ({
   };
 
   const voidTask = (): void => {
-    emit('taskVoid', createPomelloEvent());
+    const eventOverrides: Partial<PomelloEvent> = {};
+
+    // If the task was voided after the timer has ended, then we need to do some
+    // extra steps to figure out how much time to void.
+    if (timerService.getState().value === TimerState.idle) {
+      const taskStartMarker = timerService.getMarker('taskStart');
+      const taskEndMarker = timerService.getMarker('taskEnd');
+
+      if (taskStartMarker && taskEndMarker) {
+        eventOverrides.timer = {
+          time: taskStartMarker.timer.time,
+          totalTime: taskStartMarker.timer.totalTime,
+          type: taskStartMarker.timer.type,
+        };
+
+        eventOverrides.timestamp = taskEndMarker.timestamp;
+      }
+    }
+
+    emit('taskVoid', createPomelloEvent(eventOverrides));
 
     if (timerService.getState().value === TimerState.active) {
       timerService.destroyTimer();

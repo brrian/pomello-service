@@ -298,10 +298,11 @@ describe('Pomello Service - Events', () => {
     );
   });
 
-  it('should log the taskVoid event when voiding a task after the timer has ended', () => {
+  it('should log the taskVoid event with the previous timer when voiding a task after the timer has ended', () => {
     const { advanceTimer, service } = mountPomelloService({
       settings: {
         set: ['task'],
+        taskTime: 20,
       },
     });
 
@@ -317,7 +318,229 @@ describe('Pomello Service - Events', () => {
     expect(handleTaskVoid).toHaveBeenCalledWith(
       expect.objectContaining({
         taskId: 'TASK_ID',
-        timer: null,
+        timer: {
+          time: 20,
+          totalTime: 20,
+          type: 'TASK',
+        },
+        overtime: null,
+        timestamp: expect.any(Number),
+      })
+    );
+  });
+
+  it('should log the taskVoid event with the previous timer when voiding a new task after switching and after the timer has ended', () => {
+    const { advanceTimer, service } = mountPomelloService({
+      settings: {
+        set: ['task'],
+        taskTime: 20,
+      },
+    });
+
+    const handleTaskVoid = jest.fn();
+    service.on('taskVoid', handleTaskVoid);
+
+    service.selectTask('TASK_ID');
+    service.startTimer();
+    advanceTimer(15);
+    service.switchTask();
+    service.selectTask('TASK_ID_2');
+    advanceTimer();
+    service.voidTask();
+
+    expect(handleTaskVoid).toHaveBeenCalledTimes(1);
+    expect(handleTaskVoid).toHaveBeenCalledWith(
+      expect.objectContaining({
+        taskId: 'TASK_ID_2',
+        timer: {
+          time: 5,
+          totalTime: 20,
+          type: 'TASK',
+        },
+        overtime: null,
+        timestamp: expect.any(Number),
+      })
+    );
+  });
+
+  it('should log the taskVoid event with the previous timer when voiding a new task after completing a task and after the timer has ended', () => {
+    const { advanceTimer, service } = mountPomelloService({
+      settings: {
+        set: ['task'],
+        taskTime: 20,
+      },
+    });
+
+    const handleTaskVoid = jest.fn();
+    service.on('taskVoid', handleTaskVoid);
+
+    service.selectTask('TASK_ID');
+    service.startTimer();
+    advanceTimer(15);
+    service.completeTask();
+    service.taskCompleteHandled();
+    service.selectTask('TASK_ID_2');
+    advanceTimer();
+    service.voidTask();
+
+    expect(handleTaskVoid).toHaveBeenCalledTimes(1);
+    expect(handleTaskVoid).toHaveBeenCalledWith(
+      expect.objectContaining({
+        taskId: 'TASK_ID_2',
+        timer: {
+          time: 5,
+          totalTime: 20,
+          type: 'TASK',
+        },
+        overtime: null,
+        timestamp: expect.any(Number),
+      })
+    );
+  });
+
+  it('should log the taskVoid event with the previous timer when voiding a new task after switching within the grace period and after the timer has ended', () => {
+    const { advanceTimer, service } = mountPomelloService({
+      settings: {
+        betweenTasksGracePeriod: 5,
+        set: ['task'],
+        taskTime: 20,
+      },
+    });
+
+    jest.setSystemTime(0);
+
+    const handleTaskVoid = jest.fn();
+    service.on('taskVoid', handleTaskVoid);
+
+    service.selectTask('TASK_ID');
+    service.startTimer();
+    advanceTimer(15);
+    service.switchTask();
+    advanceTimer(4);
+    service.selectTask('TASK_ID_2');
+    advanceTimer();
+    advanceTimer(3);
+    service.voidTask();
+
+    expect(handleTaskVoid).toHaveBeenCalledTimes(1);
+    expect(handleTaskVoid).toHaveBeenCalledWith(
+      expect.objectContaining({
+        taskId: 'TASK_ID_2',
+        timer: {
+          time: 5,
+          totalTime: 20,
+          type: 'TASK',
+        },
+        overtime: null,
+        timestamp: 20000,
+      })
+    );
+  });
+
+  it('should log the taskVoid event with the previous timer when voiding a new task after completing a task within the grace period and after the timer has ended', () => {
+    const { advanceTimer, service } = mountPomelloService({
+      settings: {
+        betweenTasksGracePeriod: 5,
+        set: ['task'],
+        taskTime: 20,
+      },
+    });
+
+    const handleTaskVoid = jest.fn();
+    service.on('taskVoid', handleTaskVoid);
+
+    service.selectTask('TASK_ID');
+    service.startTimer();
+    advanceTimer(15);
+    service.completeTask();
+    service.taskCompleteHandled();
+    advanceTimer(4);
+    service.selectTask('TASK_ID_2');
+    advanceTimer();
+    service.voidTask();
+
+    expect(handleTaskVoid).toHaveBeenCalledTimes(1);
+    expect(handleTaskVoid).toHaveBeenCalledWith(
+      expect.objectContaining({
+        taskId: 'TASK_ID_2',
+        timer: {
+          time: 5,
+          totalTime: 20,
+          type: 'TASK',
+        },
+        overtime: null,
+        timestamp: expect.any(Number),
+      })
+    );
+  });
+
+  it('should log the taskVoid event with the previous timer when voiding a new task after switching outside the grace period and after the timer has ended', () => {
+    const { advanceTimer, service } = mountPomelloService({
+      settings: {
+        betweenTasksGracePeriod: 5,
+        set: ['task'],
+        taskTime: 30,
+      },
+    });
+
+    const handleTaskVoid = jest.fn();
+    service.on('taskVoid', handleTaskVoid);
+
+    service.selectTask('TASK_ID');
+    service.startTimer();
+    advanceTimer(10);
+    service.switchTask();
+    advanceTimer(6);
+    service.selectTask('TASK_ID_2');
+    advanceTimer();
+    service.voidTask();
+
+    expect(handleTaskVoid).toHaveBeenCalledTimes(1);
+    expect(handleTaskVoid).toHaveBeenCalledWith(
+      expect.objectContaining({
+        taskId: 'TASK_ID_2',
+        timer: {
+          time: 14,
+          totalTime: 30,
+          type: 'TASK',
+        },
+        overtime: null,
+        timestamp: expect.any(Number),
+      })
+    );
+  });
+
+  it('should log the taskVoid event with the previous timer when voiding a new task after completing a task outside the grace period and after the timer has ended', () => {
+    const { advanceTimer, service } = mountPomelloService({
+      settings: {
+        betweenTasksGracePeriod: 5,
+        set: ['task'],
+        taskTime: 30,
+      },
+    });
+
+    const handleTaskVoid = jest.fn();
+    service.on('taskVoid', handleTaskVoid);
+
+    service.selectTask('TASK_ID');
+    service.startTimer();
+    advanceTimer(10);
+    service.completeTask();
+    service.taskCompleteHandled();
+    advanceTimer(6);
+    service.selectTask('TASK_ID_2');
+    advanceTimer();
+    service.voidTask();
+
+    expect(handleTaskVoid).toHaveBeenCalledTimes(1);
+    expect(handleTaskVoid).toHaveBeenCalledWith(
+      expect.objectContaining({
+        taskId: 'TASK_ID_2',
+        timer: {
+          time: 14,
+          totalTime: 30,
+          type: 'TASK',
+        },
         overtime: null,
         timestamp: expect.any(Number),
       })
