@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 0.0.39 (2022-03-08)
+
+### Features
+
+- fix event timer data for task void events ([#39](https://github.com/brrian/pomello-service/issues/39)) ([cbcc821](https://github.com/brrian/pomello-service/commit/cbcc8217088c76b29a39f54f1eff1d41759a4e61))
+
 ### 0.0.38 (2022-03-08)
 
 ### 0.0.37 (2022-03-07)
