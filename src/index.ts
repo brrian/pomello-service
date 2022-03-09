@@ -291,6 +291,10 @@ const createPomelloService = ({
     appService.unsetCurrentTask();
 
     transitionPomodoroState();
+
+    if (timerService.getState().value !== TimerState.active) {
+      startTimer();
+    }
   };
 
   const taskTimerEndPromptHandled = (action: TaskTimerEndPromptHandledAction): void => {
