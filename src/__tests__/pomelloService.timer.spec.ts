@@ -131,6 +131,32 @@ describe('Pomello Service - Timers', () => {
     });
   });
 
+  it('should automatically start the next timer if the timer ends during the task complete prompt', () => {
+    const { advanceTimer, service } = mountPomelloService({
+      settings: {
+        longBreakTime: 30,
+        set: ['task', 'longBreak'],
+        taskTime: 20,
+      },
+    });
+
+    service.selectTask('TASK_ID');
+    service.startTimer();
+    advanceTimer(8);
+    service.completeTask();
+    advanceTimer();
+    service.taskCompleteHandled();
+
+    expect(service.getState().timer).toMatchObject({
+      isActive: true,
+      isInjected: false,
+      isPaused: false,
+      time: 30,
+      totalTime: 30,
+      type: TimerType.longBreak,
+    });
+  });
+
   it('should use the existing task timer when switching tasks', () => {
     const { advanceTimer, service } = mountPomelloService({
       settings: {
