@@ -61,6 +61,7 @@ const createPomelloService = ({
 
     overtimeService.startOvertimeCountdown({
       delay: settings.overtimeDelay,
+      taskId: appService.getState().context.currentTaskId,
       type: timer.type,
     });
   };

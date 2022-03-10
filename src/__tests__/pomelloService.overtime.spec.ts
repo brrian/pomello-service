@@ -19,6 +19,7 @@ describe('Pomello Service - Overtime', () => {
     advanceTimer(1);
 
     expect(service.getState().overtime).toMatchObject({
+      taskId: 'TASK_ID',
       time: 10,
       type: 'TASK',
     });
@@ -59,6 +60,7 @@ describe('Pomello Service - Overtime', () => {
     advanceTimer(20);
 
     expect(service.getState().overtime).toMatchObject({
+      taskId: null,
       time: 20,
       type: 'SHORT_BREAK',
     });

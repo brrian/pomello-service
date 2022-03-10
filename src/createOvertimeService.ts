@@ -36,9 +36,10 @@ const createOvertimeService = ({
     }
   };
 
-  const startOvertimeCountdown = ({ delay, type }: StartOvertimeCountdownOptions): void => {
+  const startOvertimeCountdown = ({ delay, taskId, type }: StartOvertimeCountdownOptions): void => {
     cancelOvertimeCountdown = ticker.wait(() => {
       const overtime = {
+        taskId,
         time: delay,
         type,
       };
