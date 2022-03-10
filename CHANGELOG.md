@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 0.0.41 (2022-03-10)
+
+### Features
+
+- add taskId to overtime context ([#41](https://github.com/brrian/pomello-service/issues/41)) ([67fad8c](https://github.com/brrian/pomello-service/commit/67fad8ced99ada8ad1b085f33020afa2930da3b4))
+
 ### 0.0.40 (2022-03-09)
 
 ### Bug Fixes
