@@ -926,6 +926,7 @@ describe('Pomello Service - Events', () => {
         taskId: 'TASK_TIMER_ID',
         timer: null,
         overtime: {
+          taskId: 'TASK_TIMER_ID',
           time: 0,
           type: 'TASK',
         },
@@ -955,6 +956,7 @@ describe('Pomello Service - Events', () => {
         taskId: null,
         timer: null,
         overtime: {
+          taskId: null,
           time: 20,
           type: 'LONG_BREAK',
         },
@@ -979,11 +981,87 @@ describe('Pomello Service - Events', () => {
     advanceTimer(20);
     service.startTimer();
 
+    expect(handleOvertimeEnd).toHaveBeenCalledTimes(1);
     expect(handleOvertimeEnd).toHaveBeenCalledWith(
       expect.objectContaining({
         taskId: null,
         timer: null,
         overtime: {
+          taskId: null,
+          time: 20,
+          type: 'SHORT_BREAK',
+        },
+        timestamp: expect.any(Number),
+      })
+    );
+  });
+
+  it('should log the overtimeEnd event with the taskId after switching tasks', () => {
+    const { advanceTimer, service } = mountPomelloService({
+      settings: {
+        set: ['task', 'shortBreak'],
+        shortBreakTime: 10,
+        overtimeDelay: 10,
+      },
+    });
+
+    const handleOvertimeEnd = jest.fn();
+    service.on('overtimeEnd', handleOvertimeEnd);
+
+    service.selectTask('TASK_ID');
+    service.startTimer();
+    advanceTimer();
+    advanceTimer(20);
+    service.taskTimerEndPromptHandled('switchTask');
+
+    expect(handleOvertimeEnd).toHaveBeenCalledTimes(1);
+    expect(handleOvertimeEnd).toHaveBeenCalledWith(
+      expect.objectContaining({
+        taskId: null,
+        timer: {
+          time: 10,
+          totalTime: 10,
+          type: 'SHORT_BREAK',
+        },
+        overtime: {
+          taskId: 'TASK_ID',
+          time: 20,
+          type: 'TASK',
+        },
+        timestamp: expect.any(Number),
+      })
+    );
+  });
+
+  it('should log the overtimeEnd event without the taskId after selecting a new task', () => {
+    const { advanceTimer, service } = mountPomelloService({
+      settings: {
+        set: ['shortBreak', 'task'],
+        overtimeDelay: 10,
+        taskTime: 20,
+      },
+    });
+
+    const handleOvertimeEnd = jest.fn();
+    service.on('overtimeEnd', handleOvertimeEnd);
+
+    service.startTimer();
+    advanceTimer();
+    advanceTimer(20);
+    service.selectTask('TASK_ID');
+    service.startTimer();
+
+    expect(handleOvertimeEnd).toHaveBeenCalledTimes(1);
+    expect(handleOvertimeEnd).toHaveBeenCalledWith(
+      expect.objectContaining({
+        taskId: 'TASK_ID',
+        timer: {
+          time: 20,
+          totalTime: 20,
+          type: 'TASK',
+        },
+        overtime: {
+          taskId: null,
           time: 20,
           type: 'SHORT_BREAK',
         },
