@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 0.0.42 (2022-03-11)
+
+### Features
+
+- account for grace period in taskSelect event ([#42](https://github.com/brrian/pomello-service/issues/42)) ([c854b3e](https://github.com/brrian/pomello-service/commit/c854b3e2ef0f4529a7d0cd7a7303f8054090fe11))
+
 ### 0.0.41 (2022-03-10)
 
 ### Features
