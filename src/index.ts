@@ -232,7 +232,21 @@ const createPomelloService = ({
   const selectTask = (taskId: string): void => {
     appService.selectTask(taskId);
 
-    emit('taskSelect', createPomelloEvent());
+    let eventOverrides = undefined;
+
+    const taskStartMarker = timerService.getMarker('taskStart');
+    if (taskStartMarker) {
+      eventOverrides = {
+        timer: {
+          time: taskStartMarker.timer.time,
+          totalTime: taskStartMarker.timer.totalTime,
+          type: taskStartMarker.timer.type,
+        },
+        timestamp: taskStartMarker.timestamp,
+      };
+    }
+
+    emit('taskSelect', createPomelloEvent(eventOverrides));
 
     transitionPomodoroState();
   };

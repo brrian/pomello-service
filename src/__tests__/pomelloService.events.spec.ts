@@ -63,6 +63,7 @@ describe('Pomello Service - Events', () => {
     service.selectTask('TASK_ID');
     service.startTimer();
     advanceTimer(10);
+    service.switchTask();
     service.selectTask('TASK_ID_2');
 
     expect(handleTaskSelect).toHaveBeenCalledTimes(2);
@@ -76,6 +77,42 @@ describe('Pomello Service - Events', () => {
         },
         overtime: null,
         timestamp: expect.any(Number),
+      })
+    );
+  });
+
+  it('should account for the grace period when logging a new taskSelect event', () => {
+    const { advanceTimer, service } = mountPomelloService({
+      settings: {
+        set: ['task'],
+        betweenTasksGracePeriod: 5,
+        taskTime: 20,
+      },
+    });
+
+    jest.setSystemTime(0);
+
+    const handleTaskSelect = jest.fn();
+    service.on('taskSelect', handleTaskSelect);
+
+    service.selectTask('TASK_ID');
+    service.startTimer();
+    advanceTimer(5);
+    service.switchTask();
+    advanceTimer(4);
+    service.selectTask('TASK_ID_2');
+
+    expect(handleTaskSelect).toHaveBeenCalledTimes(2);
+    expect(handleTaskSelect).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        taskId: 'TASK_ID_2',
+        timer: {
+          time: 15,
+          totalTime: 20,
+          type: 'TASK',
+        },
+        overtime: null,
+        timestamp: 5000,
       })
     );
   });
