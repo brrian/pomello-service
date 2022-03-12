@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 0.0.43 (2022-03-12)
+
+### Bug Fixes
+
+- only log timerStart if timer available ([#43](https://github.com/brrian/pomello-service/issues/43)) ([923629d](https://github.com/brrian/pomello-service/commit/923629d0d38ecd1dbc9ac3e9f08a89e87cf969ab))
+
 ### 0.0.42 (2022-03-11)
 
 ### Features
