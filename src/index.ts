@@ -307,7 +307,7 @@ const createPomelloService = ({
 
     transitionPomodoroState();
 
-    if (timerService.getState().value !== TimerState.active) {
+    if (timerService.getState().value === TimerState.ready) {
       startTimer();
     }
   };
@@ -324,7 +324,9 @@ const createPomelloService = ({
 
       transitionPomodoroState();
 
-      startTimer();
+      if (timerService.getState().value === TimerState.ready) {
+        startTimer();
+      }
     }
 
     timerService.clearMarkers();

@@ -889,6 +889,39 @@ describe('Pomello Service - Events', () => {
     );
   });
 
+  it('should not log a timerStart event if no timer is available', () => {
+    const { advanceTimer, service } = mountPomelloService({
+      settings: {
+        set: ['task'],
+        taskTime: 20,
+      },
+    });
+
+    const handleTimerStart = jest.fn();
+
+    service.selectTask('TASK_ID');
+    service.startTimer();
+    service.on('timerStart', handleTimerStart);
+    advanceTimer();
+    service.taskTimerEndPromptHandled('switchTask');
+
+    // Timer should not be available because the next timer is a task and we do
+    // not have a selected task.
+    expect(handleTimerStart).not.toHaveBeenCalled();
+
+    service.selectTask('TASK_ID_2');
+    service.startTimer();
+    handleTimerStart.mockReset();
+    advanceTimer(10);
+    service.completeTask();
+    advanceTimer();
+    service.taskCompleteHandled();
+
+    // Timer should not be available because the next timer is a task and we do
+    // not have a selected task.
+    expect(handleTimerStart).not.toHaveBeenCalled();
+  });
+
   it('should log the timerTick event when the timer is ticked', () => {
     const { advanceTimer, service } = mountPomelloService({
       settings: {
