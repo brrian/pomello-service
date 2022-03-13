@@ -5,6 +5,7 @@
   "main": "dist/pomello-service.cjs.js",
   "module": "dist/pomello-service.esm.js",
   "browser": "dist/pomello-service.umd.js",
+  "types": "dist/types/index.d.ts",
   "private": true,
   "scripts": {
     "build": "del dist && rollup --config",

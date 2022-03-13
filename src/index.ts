@@ -17,6 +17,8 @@ import {
   TimerType,
 } from './models';
 
+export type { PomelloSettings } from './models';
+
 const createPomelloService = ({
   createTicker,
   settings: initialSettings,
