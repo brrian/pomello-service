@@ -1,0 +1,1 @@
+{"version":3,"file":"createEventEmitter.d.ts","sourceRoot":"","sources":["../src/createEventEmitter.ts"],"names":[],"mappings":"AAAA,aAAK,QAAQ,GAAG,MAAM,CAAC,MAAM,EAAE,OAAO,CAAC,CAAC;AAExC,aAAK,YAAY,CAAC,KAAK,GAAG,KAAK,IAAI,CAAC,IAAI,EAAE,KAAK,KAAK,IAAI,CAAC;AAEzD,QAAA,MAAM,kBAAkB;yGAuCnB,IAAI;wGAPJ,IAAI;wHAbJ,IAAI;uHAXJ,IAAI;CAwDR,CAAC;AAEF,eAAe,kBAAkB,CAAC"}
