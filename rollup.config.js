@@ -24,7 +24,9 @@ export default [
     ],
     plugins: [
       resolve(),
-      typescript(),
+      typescript({
+        tsconfig: './tsconfig.json',
+      }),
       terser({
         ecma: 2020,
         module: true,
