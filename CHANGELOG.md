@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 0.0.46 (2022-04-07)
+
+### Features
+
+- create separate types for ticker methods ([#46](https://github.com/brrian/pomello-service/issues/46)) ([d0d6b5f](https://github.com/brrian/pomello-service/commit/d0d6b5fe00ff3d82137344e219b671f489ea0cbf))
+
 ### 0.0.45 (2022-04-07)
 
 ### Features

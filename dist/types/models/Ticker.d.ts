@@ -1,9 +1,9 @@
-import { CancelWait } from './CancelWait';
+import { TickerStart } from './TickerStart';
+import { TickerStop } from './TickerStop';
+import { TickerWait } from './TickerWait';
 export interface Ticker {
-    start(tick: Tick): void;
-    stop(): void;
-    wait(callback: () => void, delay: number): CancelWait;
+    start: TickerStart;
+    stop: TickerStop;
+    wait: TickerWait;
 }
-declare type Tick = () => void;
-export {};
 //# sourceMappingURL=Ticker.d.ts.map
