@@ -17,7 +17,7 @@ import {
   TimerType,
 } from './models';
 
-export type { PomelloSettings, Ticker } from './models';
+export type { PomelloSettings, Ticker, TickerStart, TickerStop, TickerWait } from './models';
 
 export type PomelloService = ReturnType<typeof createPomelloService>;
 
