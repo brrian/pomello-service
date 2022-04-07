@@ -18,6 +18,9 @@ export type { StartOvertimeCountdownOptions } from './StartOvertimeCountdownOpti
 export type { State } from './State';
 export type { TaskTimerEndPromptHandledAction } from './TaskTimerEndPromptHandledAction';
 export type { Ticker } from './Ticker';
+export type { TickerStart } from './TickerStart';
+export type { TickerStop } from './TickerStop';
+export type { TickerWait } from './TickerWait';
 export type { Timer } from './Timer';
 export type { TimerContext } from './TimerContext';
 export { TimerState } from './TimerState';
