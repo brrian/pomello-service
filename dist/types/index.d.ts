@@ -1,5 +1,6 @@
 import { PomelloEventMap, PomelloServiceConfig, PomelloSettings, PomelloState, TaskTimerEndPromptHandledAction } from './models';
-export type { PomelloSettings } from './models';
+export type { PomelloSettings, Ticker } from './models';
+export declare type PomelloService = ReturnType<typeof createPomelloService>;
 declare const createPomelloService: ({ createTicker, settings: initialSettings, }: PomelloServiceConfig) => {
     completeTask: () => void;
     getState: () => PomelloState;
