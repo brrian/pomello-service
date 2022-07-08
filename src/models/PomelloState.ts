@@ -1,15 +1,8 @@
+import { PomelloStatus } from './PomelloStatus';
 import { TimerType } from './TimerType';
 
 export interface PomelloState {
-  value:
-    | 'INITIALIZING'
-    | 'SELECT_TASK'
-    | 'TASK'
-    | 'TASK_COMPLETE_PROMPT'
-    | 'TASK_VOID_PROMPT'
-    | 'TASK_TIMER_END_PROMPT'
-    | 'SHORT_BREAK'
-    | 'LONG_BREAK';
+  status: PomelloStatus;
   currentTaskId: string | null;
   timer: Timer | null;
   overtime: Overtime | null;

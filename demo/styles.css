@@ -38,15 +38,15 @@ td {
 [data-timer-state='IDLE'] .timer-ready,
 [data-timer-state='ACTIVE'] .timer-active,
 [data-timer-state='PAUSED'] .timer-paused,
-[data-app-state='SELECT_TASK'] .select-task,
-[data-app-state='TASK'][data-timer-state='ACTIVE'] .active-task-timer,
-[data-app-state='TASK'][data-timer-state='PAUSED'] .active-task-timer,
-[data-app-state='SHORT_BREAK'][data-timer-state='ACTIVE'] .active-break-timer,
-[data-app-state='SHORT_BREAK'][data-timer-state='PAUSED'] .active-break-timer,
-[data-app-state='LONG_BREAK'][data-timer-state='ACTIVE'] .active-break-timer,
-[data-app-state='LONG_BREAK'][data-timer-state='PAUSED'] .active-break-timer,
-[data-app-state='TASK_TIMER_END_PROMPT'] .task-timer-ended,
-[data-app-state='TASK_COMPLETE_PROMPT'] .task-complete-prompt,
-[data-app-state='TASK_VOID_PROMPT'] .task-void-prompt {
+[data-status='SELECT_TASK'] .select-task,
+[data-status='TASK'][data-timer-state='ACTIVE'] .active-task-timer,
+[data-status='TASK'][data-timer-state='PAUSED'] .active-task-timer,
+[data-status='SHORT_BREAK'][data-timer-state='ACTIVE'] .active-break-timer,
+[data-status='SHORT_BREAK'][data-timer-state='PAUSED'] .active-break-timer,
+[data-status='LONG_BREAK'][data-timer-state='ACTIVE'] .active-break-timer,
+[data-status='LONG_BREAK'][data-timer-state='PAUSED'] .active-break-timer,
+[data-status='TASK_TIMER_END_PROMPT'] .task-timer-ended,
+[data-status='TASK_COMPLETE_PROMPT'] .task-complete-prompt,
+[data-status='TASK_VOID_PROMPT'] .task-void-prompt {
   display: inline-block;
 }

@@ -1,4 +1,4 @@
-export enum AppState {
+export enum PomelloStatus {
   initializing = 'INITIALIZING',
   selectTask = 'SELECT_TASK',
   task = 'TASK',

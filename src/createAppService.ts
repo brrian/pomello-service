@@ -1,9 +1,9 @@
 import createState from './createState';
-import { AppContext, AppState, CreateAppServiceOptions } from './models';
+import { AppContext, PomelloStatus, CreateAppServiceOptions } from './models';
 
 const createAppService = ({ onStateChange }: CreateAppServiceOptions) => {
-  const { getState, setState } = createState<AppState, AppContext>({
-    initialState: AppState.initializing,
+  const { getState, setState } = createState<PomelloStatus, AppContext>({
+    initialState: PomelloStatus.initializing,
     context: {
       currentTaskId: null,
     },
@@ -11,21 +11,21 @@ const createAppService = ({ onStateChange }: CreateAppServiceOptions) => {
   });
 
   const completeTask = (): void => {
-    setState(AppState.taskCompletePrompt);
+    setState(PomelloStatus.taskCompletePrompt);
   };
 
   const selectTask = (taskId: string): void => {
-    setState(AppState.task, {
+    setState(PomelloStatus.task, {
       currentTaskId: taskId,
     });
   };
 
-  const setAppState = (target: AppState): void => {
+  const setAppState = (target: PomelloStatus): void => {
     setState(target);
   };
 
   const switchTask = (): void => {
-    setState(AppState.selectTask, {
+    setState(PomelloStatus.selectTask, {
       currentTaskId: null,
     });
   };
@@ -37,7 +37,7 @@ const createAppService = ({ onStateChange }: CreateAppServiceOptions) => {
   };
 
   const voidTask = (): void => {
-    setState(AppState.taskVoidPrompt);
+    setState(PomelloStatus.taskVoidPrompt);
   };
 
   return {
