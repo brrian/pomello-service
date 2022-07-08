@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 0.1.0 (2022-07-08)
+
+### ⚠ BREAKING CHANGES
+
+- PomelloState's 'value' property is now 'status'
+
+### Features
+
+- expose PomelloState, PomelloStatus types ([#48](https://github.com/brrian/pomello-service/issues/48)) ([9480c35](https://github.com/brrian/pomello-service/commit/9480c35ebb6e5dd890cf360a0f18f376b0792b76))
+
 ### 0.0.47 (2022-07-08)
 
 ### Features
