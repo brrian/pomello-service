@@ -1,5 +1,7 @@
 import resolve from '@rollup/plugin-node-resolve';
+import del from 'rollup-plugin-delete';
 import typescript from '@rollup/plugin-typescript';
+import dts from 'rollup-plugin-dts';
 import { terser } from 'rollup-plugin-terser';
 import { browser, main, module } from './package.json';
 
@@ -31,6 +33,22 @@ export default [
         ecma: 2020,
         module: true,
         warnings: true,
+      }),
+    ],
+  },
+  {
+    input: 'dist/types/index.d.ts',
+    output: [
+      {
+        file: 'dist/index.d.ts',
+        format: 'es',
+      },
+    ],
+    plugins: [
+      dts(),
+      del({
+        targets: 'dist/types',
+        hook: 'buildEnd',
       }),
     ],
   },
