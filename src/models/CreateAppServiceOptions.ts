@@ -1,7 +1,7 @@
 import { AppContext } from './AppContext';
-import { AppState } from './AppState';
+import { PomelloStatus } from './PomelloStatus';
 import { State } from './State';
 
 export interface CreateAppServiceOptions {
-  onStateChange: (state: State<AppState, AppContext>) => void;
+  onStateChange: (state: State<PomelloStatus, AppContext>) => void;
 }

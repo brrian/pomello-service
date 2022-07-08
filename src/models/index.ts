@@ -1,5 +1,4 @@
 export type { AppContext } from './AppContext';
-export { AppState } from './AppState';
 export type { CancelWait } from './CancelWait';
 export type { CreateAppServiceOptions } from './CreateAppServiceOptions';
 export type { CreateOvertimeServiceOptions } from './CreateOvertimeServiceOptions';
@@ -14,6 +13,7 @@ export type { PomelloEventMap } from './PomelloEventMap';
 export type { PomelloServiceConfig } from './PomelloServiceConfig';
 export type { PomelloSettings } from './PomelloSettings';
 export type { PomelloState } from './PomelloState';
+export { PomelloStatus } from './PomelloStatus';
 export type { StartOvertimeCountdownOptions } from './StartOvertimeCountdownOptions';
 export type { State } from './State';
 export type { TaskTimerEndPromptHandledAction } from './TaskTimerEndPromptHandledAction';

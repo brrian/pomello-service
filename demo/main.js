@@ -86,10 +86,10 @@ const pomello = createPomelloService({
 
 pomello.setReady();
 
-pomello.on('update', ({ value, currentTaskId, timer, overtime }) => {
-  document.body.dataset.appState = value;
+pomello.on('update', ({ status, currentTaskId, timer, overtime }) => {
+  document.body.dataset.status = status;
 
-  setValue('app-state', value);
+  setValue('status', status);
   setValue('current-task', currentTaskId);
 
   const timerState = !timer ? null : timer.isActive ? 'ACTIVE' : timer.isPaused ? 'PAUSED' : 'IDLE';

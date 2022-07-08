@@ -4,7 +4,7 @@ describe('Pomello Service', () => {
   it('should initialize without errors', () => {
     const { service } = mountPomelloService({ initialize: false });
 
-    expect(service.getState().value).toEqual('INITIALIZING');
+    expect(service.getState().status).toEqual('INITIALIZING');
   });
 
   it('should transition to the select task state', () => {
@@ -12,7 +12,7 @@ describe('Pomello Service', () => {
 
     service.setReady();
 
-    expect(service.getState().value).toEqual('SELECT_TASK');
+    expect(service.getState().status).toEqual('SELECT_TASK');
   });
 
   it('should transition to the task state', () => {
@@ -24,13 +24,13 @@ describe('Pomello Service', () => {
     waitForBatchedEvents();
 
     expect(service.getState()).toMatchObject({
-      value: 'TASK',
+      status: 'TASK',
       currentTaskId: 'TASK_ID',
     });
 
     expect(handleServiceUpdate).toHaveBeenCalledWith(
       expect.objectContaining({
-        value: 'TASK',
+        status: 'TASK',
         currentTaskId: 'TASK_ID',
       })
     );
@@ -48,13 +48,13 @@ describe('Pomello Service', () => {
     waitForBatchedEvents();
 
     expect(service.getState()).toMatchObject({
-      value: 'TASK_TIMER_END_PROMPT',
+      status: 'TASK_TIMER_END_PROMPT',
       currentTaskId: 'TASK_ID',
     });
 
     expect(handleServiceUpdate).toHaveBeenLastCalledWith(
       expect.objectContaining({
-        value: 'TASK_TIMER_END_PROMPT',
+        status: 'TASK_TIMER_END_PROMPT',
         currentTaskId: 'TASK_ID',
         timer: null,
       })
@@ -79,14 +79,14 @@ describe('Pomello Service', () => {
 
     expect(service.getState()).toMatchObject(
       expect.objectContaining({
-        value: 'SHORT_BREAK',
+        status: 'SHORT_BREAK',
         currentTaskId: 'TASK_ID',
       })
     );
 
     expect(handleServiceUpdate).toHaveBeenLastCalledWith(
       expect.objectContaining({
-        value: 'SHORT_BREAK',
+        status: 'SHORT_BREAK',
         currentTaskId: 'TASK_ID',
       })
     );
@@ -110,14 +110,14 @@ describe('Pomello Service', () => {
 
     expect(service.getState()).toMatchObject(
       expect.objectContaining({
-        value: 'LONG_BREAK',
+        status: 'LONG_BREAK',
         currentTaskId: null,
       })
     );
 
     expect(handleServiceUpdate).toHaveBeenLastCalledWith(
       expect.objectContaining({
-        value: 'LONG_BREAK',
+        status: 'LONG_BREAK',
         currentTaskId: null,
       })
     );
@@ -142,14 +142,14 @@ describe('Pomello Service', () => {
 
     expect(service.getState()).toMatchObject(
       expect.objectContaining({
-        value: 'SELECT_TASK',
+        status: 'SELECT_TASK',
         currentTaskId: null,
       })
     );
 
     expect(handleServiceUpdate).toHaveBeenLastCalledWith(
       expect.objectContaining({
-        value: 'SELECT_TASK',
+        status: 'SELECT_TASK',
         currentTaskId: null,
       })
     );
@@ -159,14 +159,14 @@ describe('Pomello Service', () => {
 
     expect(service.getState()).toMatchObject(
       expect.objectContaining({
-        value: 'TASK',
+        status: 'TASK',
         currentTaskId: 'TASK_ID_2',
       })
     );
 
     expect(handleServiceUpdate).toHaveBeenLastCalledWith(
       expect.objectContaining({
-        value: 'TASK',
+        status: 'TASK',
         currentTaskId: 'TASK_ID_2',
       })
     );
@@ -190,14 +190,14 @@ describe('Pomello Service', () => {
 
     expect(service.getState()).toMatchObject(
       expect.objectContaining({
-        value: 'SELECT_TASK',
+        status: 'SELECT_TASK',
         currentTaskId: null,
       })
     );
 
     expect(handleServiceUpdate).toHaveBeenLastCalledWith(
       expect.objectContaining({
-        value: 'SELECT_TASK',
+        status: 'SELECT_TASK',
         currentTaskId: null,
       })
     );
@@ -222,14 +222,14 @@ describe('Pomello Service', () => {
 
     expect(service.getState()).toMatchObject(
       expect.objectContaining({
-        value: 'TASK_COMPLETE_PROMPT',
+        status: 'TASK_COMPLETE_PROMPT',
         currentTaskId: 'TASK_ID',
       })
     );
 
     expect(handleServiceUpdate).toHaveBeenLastCalledWith(
       expect.objectContaining({
-        value: 'TASK_COMPLETE_PROMPT',
+        status: 'TASK_COMPLETE_PROMPT',
         currentTaskId: 'TASK_ID',
       })
     );
@@ -240,14 +240,14 @@ describe('Pomello Service', () => {
 
     expect(service.getState()).toMatchObject(
       expect.objectContaining({
-        value: 'SELECT_TASK',
+        status: 'SELECT_TASK',
         currentTaskId: null,
       })
     );
 
     expect(handleServiceUpdate).toHaveBeenLastCalledWith(
       expect.objectContaining({
-        value: 'SELECT_TASK',
+        status: 'SELECT_TASK',
         currentTaskId: null,
       })
     );
@@ -272,14 +272,14 @@ describe('Pomello Service', () => {
 
     expect(service.getState()).toMatchObject(
       expect.objectContaining({
-        value: 'TASK_COMPLETE_PROMPT',
+        status: 'TASK_COMPLETE_PROMPT',
         currentTaskId: 'TASK_ID',
       })
     );
 
     expect(handleServiceUpdate).toHaveBeenLastCalledWith(
       expect.objectContaining({
-        value: 'TASK_COMPLETE_PROMPT',
+        status: 'TASK_COMPLETE_PROMPT',
         currentTaskId: 'TASK_ID',
       })
     );
@@ -306,14 +306,14 @@ describe('Pomello Service', () => {
 
     expect(service.getState()).toMatchObject(
       expect.objectContaining({
-        value: 'SHORT_BREAK',
+        status: 'SHORT_BREAK',
         currentTaskId: null,
       })
     );
 
     expect(handleServiceUpdate).toHaveBeenLastCalledWith(
       expect.objectContaining({
-        value: 'SHORT_BREAK',
+        status: 'SHORT_BREAK',
         currentTaskId: null,
       })
     );
@@ -337,14 +337,14 @@ describe('Pomello Service', () => {
 
     expect(service.getState()).toMatchObject(
       expect.objectContaining({
-        value: 'TASK_VOID_PROMPT',
+        status: 'TASK_VOID_PROMPT',
         currentTaskId: 'TASK_ID',
       })
     );
 
     expect(handleServiceUpdate).toHaveBeenLastCalledWith(
       expect.objectContaining({
-        value: 'TASK_VOID_PROMPT',
+        status: 'TASK_VOID_PROMPT',
         currentTaskId: 'TASK_ID',
       })
     );
@@ -369,14 +369,14 @@ describe('Pomello Service', () => {
 
     expect(service.getState()).toMatchObject(
       expect.objectContaining({
-        value: 'SHORT_BREAK',
+        status: 'SHORT_BREAK',
         currentTaskId: 'TASK_ID',
       })
     );
 
     expect(handleServiceUpdate).toHaveBeenLastCalledWith(
       expect.objectContaining({
-        value: 'SHORT_BREAK',
+        status: 'SHORT_BREAK',
         currentTaskId: 'TASK_ID',
       })
     );
@@ -402,14 +402,14 @@ describe('Pomello Service', () => {
 
     expect(service.getState()).toMatchObject(
       expect.objectContaining({
-        value: 'TASK',
+        status: 'TASK',
         currentTaskId: 'TASK_ID',
       })
     );
 
     expect(handleServiceUpdate).toHaveBeenLastCalledWith(
       expect.objectContaining({
-        value: 'TASK',
+        status: 'TASK',
         currentTaskId: 'TASK_ID',
       })
     );
@@ -434,14 +434,14 @@ describe('Pomello Service', () => {
 
     expect(service.getState()).toMatchObject(
       expect.objectContaining({
-        value: 'LONG_BREAK',
+        status: 'LONG_BREAK',
         currentTaskId: null,
       })
     );
 
     expect(handleServiceUpdate).toHaveBeenLastCalledWith(
       expect.objectContaining({
-        value: 'LONG_BREAK',
+        status: 'LONG_BREAK',
         currentTaskId: null,
       })
     );
@@ -463,7 +463,7 @@ describe('Pomello Service', () => {
 
     expect(service.getState()).toMatchObject(
       expect.objectContaining({
-        value: 'SHORT_BREAK',
+        status: 'SHORT_BREAK',
         currentTaskId: 'TASK_ID',
         timer: expect.objectContaining({
           time: 10,

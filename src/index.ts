@@ -3,7 +3,6 @@ import createEventEmitter from './createEventEmitter';
 import createOvertimeService from './createOvertimeService';
 import createTimerService from './createTimerService';
 import {
-  AppState,
   Overtime,
   OvertimeState,
   PomelloEvent,
@@ -11,13 +10,22 @@ import {
   PomelloServiceConfig,
   PomelloSettings,
   PomelloState,
+  PomelloStatus,
   TaskTimerEndPromptHandledAction,
   Timer,
   TimerState,
   TimerType,
 } from './models';
 
-export type { PomelloSettings, Ticker, TickerStart, TickerStop, TickerWait } from './models';
+export type {
+  PomelloSettings,
+  PomelloState,
+  PomelloStatus,
+  Ticker,
+  TickerStart,
+  TickerStop,
+  TickerWait,
+} from './models';
 
 export type PomelloService = ReturnType<typeof createPomelloService>;
 
@@ -53,13 +61,13 @@ const createPomelloService = ({
       incrementSetIndex();
     }
 
-    if (appService.getState().value === AppState.task) {
+    if (appService.getState().value === PomelloStatus.task) {
       timerService.setMarker('taskEnd');
 
-      appService.setAppState(AppState.taskTimerEndPrompt);
+      appService.setAppState(PomelloStatus.taskTimerEndPrompt);
 
       emit('taskEnd', createPomelloEvent());
-    } else if (appService.getState().value !== AppState.taskCompletePrompt) {
+    } else if (appService.getState().value !== PomelloStatus.taskCompletePrompt) {
       transitionPomodoroState();
     }
 
@@ -168,9 +176,9 @@ const createPomelloService = ({
           emit('taskStart', createPomelloEvent(eventOverrides));
         }
 
-        return appService.setAppState(AppState.task);
+        return appService.setAppState(PomelloStatus.task);
       } else {
-        return appService.setAppState(AppState.selectTask);
+        return appService.setAppState(PomelloStatus.selectTask);
       }
     }
 
@@ -180,7 +188,7 @@ const createPomelloService = ({
         type: TimerType.shortBreak,
       });
 
-      return appService.setAppState(AppState.shortBreak);
+      return appService.setAppState(PomelloStatus.shortBreak);
     }
 
     if (set === 'longBreak') {
@@ -189,7 +197,7 @@ const createPomelloService = ({
         type: TimerType.longBreak,
       });
 
-      return appService.setAppState(AppState.longBreak);
+      return appService.setAppState(PomelloStatus.longBreak);
     }
 
     throw new Error(`Unknown set item: "${set}"`);
@@ -220,7 +228,7 @@ const createPomelloService = ({
       : null;
 
     return {
-      value: appState.value,
+      status: appState.value,
       currentTaskId: appState.context.currentTaskId,
       timer,
       overtime: overtime.context.overtime,
@@ -370,7 +378,7 @@ const createPomelloService = ({
   };
 
   const voidPromptHandled = (): void => {
-    appService.setAppState(AppState.shortBreak);
+    appService.setAppState(PomelloStatus.shortBreak);
 
     timerService.createTimer({
       isInjected: true,

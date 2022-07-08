@@ -30,7 +30,7 @@ describe('Pomello Service - Pomodoro Sets', () => {
         totalTime: 8,
         type: 'SHORT_BREAK',
       },
-      value: 'SHORT_BREAK',
+      status: 'SHORT_BREAK',
     });
 
     service.startTimer();
@@ -46,7 +46,7 @@ describe('Pomello Service - Pomodoro Sets', () => {
         totalTime: 16,
         type: 'LONG_BREAK',
       },
-      value: 'LONG_BREAK',
+      status: 'LONG_BREAK',
     });
   });
 
@@ -70,7 +70,7 @@ describe('Pomello Service - Pomodoro Sets', () => {
         totalTime: 8,
         type: 'TASK',
       },
-      value: 'TASK',
+      status: 'TASK',
     });
 
     service.startTimer();
@@ -87,7 +87,7 @@ describe('Pomello Service - Pomodoro Sets', () => {
         totalTime: 8,
         type: 'TASK',
       },
-      value: 'TASK',
+      status: 'TASK',
     });
 
     advanceTimer();
@@ -104,7 +104,7 @@ describe('Pomello Service - Pomodoro Sets', () => {
         totalTime: 8,
         type: 'TASK',
       },
-      value: 'TASK',
+      status: 'TASK',
     });
   });
 
@@ -127,7 +127,7 @@ describe('Pomello Service - Pomodoro Sets', () => {
         totalTime: 8,
         type: 'SHORT_BREAK',
       },
-      value: 'SHORT_BREAK',
+      status: 'SHORT_BREAK',
     });
 
     service.startTimer();
@@ -136,7 +136,7 @@ describe('Pomello Service - Pomodoro Sets', () => {
     expect(service.getState()).toMatchObject({
       currentTaskId: null,
       timer: null,
-      value: 'SELECT_TASK',
+      status: 'SELECT_TASK',
     });
 
     service.selectTask('TASK_ID');
@@ -151,7 +151,7 @@ describe('Pomello Service - Pomodoro Sets', () => {
         totalTime: 16,
         type: 'TASK',
       },
-      value: 'TASK',
+      status: 'TASK',
     });
   });
 
@@ -175,7 +175,7 @@ describe('Pomello Service - Pomodoro Sets', () => {
         totalTime: 5,
         type: 'SHORT_BREAK',
       },
-      value: 'SHORT_BREAK',
+      status: 'SHORT_BREAK',
     });
 
     service.startTimer();
@@ -184,7 +184,7 @@ describe('Pomello Service - Pomodoro Sets', () => {
     expect(service.getState()).toMatchObject({
       currentTaskId: null,
       timer: null,
-      value: 'SELECT_TASK',
+      status: 'SELECT_TASK',
     });
 
     service.selectTask('TASK_ID');
@@ -199,7 +199,7 @@ describe('Pomello Service - Pomodoro Sets', () => {
         totalTime: 20,
         type: 'TASK',
       },
-      value: 'TASK',
+      status: 'TASK',
     });
 
     service.startTimer();
@@ -216,7 +216,7 @@ describe('Pomello Service - Pomodoro Sets', () => {
         totalTime: 15,
         type: 'LONG_BREAK',
       },
-      value: 'LONG_BREAK',
+      status: 'LONG_BREAK',
     });
 
     advanceTimer();
@@ -231,7 +231,7 @@ describe('Pomello Service - Pomodoro Sets', () => {
         totalTime: 5,
         type: 'SHORT_BREAK',
       },
-      value: 'SHORT_BREAK',
+      status: 'SHORT_BREAK',
     });
   });
 
@@ -261,7 +261,7 @@ describe('Pomello Service - Pomodoro Sets', () => {
         totalTime: 20,
         type: 'TASK',
       },
-      value: 'TASK',
+      status: 'TASK',
     });
   });
 
@@ -291,7 +291,7 @@ describe('Pomello Service - Pomodoro Sets', () => {
         totalTime: 20,
         type: 'TASK',
       },
-      value: 'TASK',
+      status: 'TASK',
     });
   });
 });
