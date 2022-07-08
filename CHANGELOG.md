@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 0.0.47 (2022-07-08)
+
+### Features
+
+- consolidate type declaration output ([#47](https://github.com/brrian/pomello-service/issues/47)) ([2ba16b6](https://github.com/brrian/pomello-service/commit/2ba16b62e407ad867bda7d8c2c138d3669653737))
+
 ### 0.0.46 (2022-04-07)
 
 ### Features

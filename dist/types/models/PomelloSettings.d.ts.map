@@ -1,1 +1,0 @@
-{"version":3,"file":"PomelloSettings.d.ts","sourceRoot":"","sources":["../../src/models/PomelloSettings.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,eAAe;IAC9B,uBAAuB,EAAE,MAAM,CAAC;IAChC,aAAa,EAAE,MAAM,CAAC;IACtB,aAAa,EAAE,MAAM,CAAC;IACtB,GAAG,EAAE,OAAO,EAAE,CAAC;IACf,cAAc,EAAE,MAAM,CAAC;IACvB,QAAQ,EAAE,MAAM,CAAC;CAClB;AAED,aAAK,OAAO,GAAG,MAAM,GAAG,YAAY,GAAG,WAAW,CAAC"}

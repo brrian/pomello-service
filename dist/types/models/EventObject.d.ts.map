@@ -1,1 +1,0 @@
-{"version":3,"file":"EventObject.d.ts","sourceRoot":"","sources":["../../src/models/EventObject.ts"],"names":[],"mappings":"AAAA,oBAAY,WAAW,CAAC,KAAK,SAAS,MAAM,EAAE,QAAQ,GAAG,KAAK,IAAI,CAAC,QAAQ,CAAC,SAAS,CAAC,KAAK,CAAC,GACxF;IAAE,IAAI,EAAE,KAAK,CAAA;CAAE,GACf;IAAE,IAAI,EAAE,KAAK,CAAC;IAAC,OAAO,EAAE,QAAQ,CAAA;CAAE,CAAC"}
